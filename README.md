@@ -43,6 +43,6 @@ https://devdocs.magento.com/guides/v2.4/config-guide/cli/config-cli-subcommands-
    4. Verify that the extension is enabled: `php bin/magento module:status Mailjet_Mailjet` You should see output verifying that the extension is no longer disabled: `Module is enabled`
    5. Clean the cache: `php bin/magento cache:clean`
       1. Disable maintenance mode: `php bin/magento maintenance:disable`
-      2. Configure the extension in Admin as needed: go to **Admin panel > Stores >  Configuration > Mailjet **
+      2. Configure the extension in Admin as needed: go to **Admin panel > Stores >  Configuration > Mailjet**
 
 Note: You need to have a mailjet account to set your API settings.
