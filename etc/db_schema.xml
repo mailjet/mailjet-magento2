@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="mailjet_config" resource="default" engine="innodb" comment="Mailjet Config">
+        <column xsi:type="int" name="config_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Config Id"/>
+        <column xsi:type="varchar" name="api_key" nullable="false" length="64" comment="Api Key"/>
+        <column xsi:type="varchar" name="secret_key" nullable="false" length="255" comment="Secret Key"/>
+        <column xsi:type="varchar" name="list" nullable="false" length="32" comment="Mailjet List"/>
+        <column xsi:type="int" name="sync_preference" comment="Sync Preference"/>
+        <column xsi:type="int" name="store_id" comment="Store Id"/>
+        <column xsi:type="int" name="unsubscribe_event" comment="Unsubscribe event"/>
+        <column xsi:type="int" name="ecommerce_data" comment="Ecommerce data"/>
+        <column xsi:type="int" name="enabled" comment="Module is enabled"/>
+        <column xsi:type="varchar" name="iframe_token" comment="Iframe Token" nullable="true"/>
+        <column xsi:type="timestamp" name="iframe_token_expire" comment="Iframe Token Exploration Date"/>
+        <column xsi:type="int" name="deleted" comment="Deleted config"/>
+        <column xsi:type="int" name="has_errors" comment="Does not delete if it has errors"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="config_id"/>
+        </constraint>
+    </table>
+    <table name="mailjet_job" resource="default" engine="innodb" comment="Mailjet Job">
+        <column xsi:type="int" name="job_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Job id"/>
+        <column xsi:type="varchar" name="action" nullable="false" length="64" comment="Action"/>
+        <column xsi:type="int" name="config_id" padding="10" unsigned="true" nullable="false" comment="Config Id"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="executed_at" comment="Executed at"/>
+        <column xsi:type="varchar" name="error_id" nullable="true" length="64" comment="Error Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="job_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="MAILJET_JOB_CONFIG_ID_MAILJET_CONFIG_CONFIG_ID"
+                    table="mailjet_job" column="config_id" referenceTable="mailjet_config"
+                    referenceColumn="config_id" onDelete="CASCADE"/>
+        <index referenceId="MAILJET_JOB_CONFIG_ID" indexType="btree">
+            <column name="config_id"/>
+        </index>
+    </table>
+    <table name="mailjet_subscriber_queue" resource="default" engine="innodb" comment="Mailjet Subscriber Queue">
+        <column xsi:type="int" name="subscriber_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Subscriber Id"/>
+        <column xsi:type="varchar" name="property" nullable="false" length="255" comment="Subscriber property"/>
+        <column xsi:type="varchar" name="email" nullable="false" length="255" comment="Subscriber Email"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Name Email"/>
+        <column xsi:type="varchar" name="action" nullable="false" length="32" comment="Subscriber Action"/>
+        <column xsi:type="int" name="config_id" padding="10" unsigned="true" nullable="false" comment="Config Id"/>
+        <column xsi:type="int" name="job_id" padding="10" unsigned="true" nullable="true" comment="Job id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="subscriber_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="MAILJET_SUBSCRIBER_QUEUE_CONFIG_ID_MAILJET_CONFIG_CONFIG_ID"
+                    table="mailjet_subscriber_queue" column="config_id" referenceTable="mailjet_config"
+                    referenceColumn="config_id" onDelete="CASCADE"/>
+        <constraint xsi:type="foreign" referenceId="MAILJET_SUBSCRIBER_QUEUE_JOB_ID_MAILJET_JOB_JOB_ID"
+                    table="mailjet_subscriber_queue" column="job_id" referenceTable="mailjet_job"
+                    referenceColumn="job_id" onDelete="CASCADE"/>
+        <index referenceId="MAILJET_SUBSCRIBER_QUEUE_CONFIG_ID" indexType="btree">
+            <column name="config_id"/>
+        </index>
+        <index referenceId="MAILJET_SUBSCRIBER_QUEUE_JOB_ID" indexType="btree">
+            <column name="job_id"/>
+        </index>
+    </table>
+    <table name="mailjet_error" resource="default" engine="innodb" comment="Mailjet Error">
+        <column xsi:type="int" name="error_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Error Id"/>
+        <column xsi:type="varchar" name="message" nullable="true" length="255" comment="Message"/>
+        <column xsi:type="varchar" name="api_result" nullable="true" length="255" comment="Api result"/>
+        <column xsi:type="int" name="status" nullable="false" comment="Status result"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="error_id"/>
+        </constraint>
+    </table>
+    <table name="quote" resource="checkout" comment="Sales Flat Quote">
+        <column xsi:type="smallint" name="newsletter_subscribe" padding="20" default="0" nullable="false" unsigned="true" comment="Newsletter Subscribe"/>
+    </table>
+</schema>

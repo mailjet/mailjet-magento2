@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="admin_system_config_changed_section_mailjet">
+        <observer name="mailjet_save_config" instance="Mailjet\Mailjet\Observer\Adminhtml\System\Config\SaveConfig"/>
+    </event>
+    <event name="adminhtml_customer_save_after">
+        <observer name="mailjet_customer_save_after" instance="Mailjet\Mailjet\Observer\Adminhtml\Customer\SaveAfter" />
+    </event>
+    <event name="controller_action_predispatch_adminhtml_system_config_edit">
+        <observer name="mailjet_customer_config_edit" instance="Mailjet\Mailjet\Observer\Adminhtml\System\Config\ConfigEdit" />
+    </event>
+    <event name="order_cancel_after">
+        <observer name="mailjet_cancel_order_email" instance="Mailjet\Mailjet\Observer\Order\CancelAfter" />
+    </event>
+    <event name="catalog_product_save_before">
+        <observer name="mailjet_catalog_product_save_before" instance="Mailjet\Mailjet\Observer\Catalog\Product\SaveBefore" />
+    </event>
+</config>

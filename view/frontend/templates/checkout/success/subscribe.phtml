@@ -1,0 +1,34 @@
+<div id="newsletter-subscription">
+    <br>
+    <div>
+        <p><?= $block->getBannerText(); ?></p>
+        <span id="subscribe-button" class="action primary"><?= $block->getButtonText(); ?></span>
+    </div>
+</div>
+<script type="text/javascript">//<![CDATA[
+    require([
+        'prototype',
+        'jquery'
+    ], function () {
+        jQuery('#subscribe-button').on('click', function() {
+            jQuery('#newsletter-subscription').trigger('processStart');
+
+            jQuery.ajax({
+                url: '<?= $block->getUrl('mailjet/checkout_success/subscribe'); ?>',
+                data: {
+                    email: '<?= $block->getEmail(); ?>',
+                },
+                type: 'POST',
+                success: function(data) {
+                    jQuery('#newsletter-subscription').trigger('processStop');
+
+                    if (data.result) {
+                        jQuery('#newsletter-subscription').replaceWith('<br><div id="newsletter-subscription-success" class="message message-success success"><div>' + data.text + '</div></div>');
+                    } else {
+                        jQuery('#newsletter-subscription').replaceWith('<br><div class="message message-error error" id="newsletter-subscription-error"><div>' + data.text + '</div></div>');
+                    }
+                }
+            });
+        });
+    });
+//]]></script>

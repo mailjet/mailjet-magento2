@@ -1,0 +1,26 @@
+.mailjet-hint {
+    background:#EAF0EE;
+    border:1px solid #CCCCCC;
+    margin-bottom:10px;
+    padding:11px 0 0 10px;
+}
+.mailjet-hint .container {
+    height: 100px;
+}
+.mailjet-hint .container > div,
+.mailjet-hint .container > img {
+    float: left;
+}
+.mailjet-hint .container > div {
+    padding: 20px;
+}
+.mailjet-hint .container p {
+    font-size: 1.2rem;
+}
+.mailjet-hint .container p.version {
+    color: #808080;
+}
+#mailjet_account #row_mailjet_account_test_smtp_actions,
+#mailjet_account #row_mailjet_account_test_smtp_email {
+    display: none;
+}

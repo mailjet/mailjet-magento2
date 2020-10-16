@@ -1,0 +1,67 @@
+<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\TestSMTP */ ?>
+<?= $block->getButtonHtml() ?>
+<script type="text/javascript">//<![CDATA[
+    require([
+        'prototype'
+    ], function () {
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_BUTTON; ?>', 'click', function () {
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_BUTTON; ?>').parent('td').parent('tr').hide();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_EMAIL; ?>').parent('td').parent('tr').show();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_SEND_BUTTON; ?>').parent('td').parent('tr').show();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_CANCEL_BUTTON; ?>').parent('td').parent('tr').show();
+        });
+
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_SEND_BUTTON; ?>', 'click', function () {
+            var mailjet_api_key_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_API_KEY; ?>';
+            var mailjet_secret_key_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SECRET_KEY; ?>';
+            var mailjet_test_smtp_send_button_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_SEND_BUTTON; ?>';
+            var mailjet_smtp_port_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SMTP_PORT; ?>';
+            var mailjet_use_ssl_tls_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_USE_SSL_TLS; ?>';
+            var mailjet_test_smtp_email_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_EMAIL; ?>';
+
+            var mailjet_test_smtp_send_button = jQuery('#' + mailjet_test_smtp_send_button_id);
+            var mailjet_smtp_port             = jQuery('#' + mailjet_smtp_port_id);
+            var mailjet_use_ssl_tls           = jQuery('#' + mailjet_use_ssl_tls_id);
+            var mailjet_test_smtp_email       = jQuery('#' + mailjet_test_smtp_email_id);
+            var mailjet_api_key               = jQuery('#' + mailjet_api_key_id);
+            var mailjet_secret_key            = jQuery('#' + mailjet_secret_key_id);
+
+            mailjet_test_smtp_send_button.trigger('processStart');
+
+            jQuery.ajax({
+                url: '<?= $block->getUrl('mailjet/system_config/sendemail'); ?>',
+                data: {
+                    smtp_port: mailjet_smtp_port.val(),
+                    use_ssl_tls: mailjet_use_ssl_tls.val(),
+                    smtp_email: mailjet_test_smtp_email.val(),
+                    api_key: mailjet_api_key.val(),
+                    secret_key: mailjet_secret_key.val(),
+                    website_id: '<?= $block->getRequest()->getParam('website'); ?>',
+                    store_id: '<?= $block->getRequest()->getParam('store'); ?>'
+                },
+                type: 'POST',
+                success: function(data) {
+                    jQuery('#' + mailjet_test_smtp_email_id + '-success').remove();
+                    jQuery('#' + mailjet_test_smtp_email_id + '-error').remove();
+
+                    if (data.hasOwnProperty('message')) {
+                        if (data.result) {
+                            jQuery('<div id="' + mailjet_test_smtp_email_id + '-success" style="margin: 10px 0;"><div class="messages"><div class="message message-success success"><div>' + data.message + '</div></div></div></div>').insertAfter('#' + mailjet_test_smtp_email_id);
+                        } else {
+                            jQuery('<div id="' + mailjet_test_smtp_email_id + '-error" style="margin: 10px 0;"><div class="messages"><div class="message message-error error"><div>' + data.message + '</div></div></div></div>').insertAfter('#' + mailjet_test_smtp_email_id);
+                        }
+                    }
+
+                    mailjet_test_smtp_send_button.trigger('processStop');
+                }
+            });
+        });
+
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_CANCEL_BUTTON; ?>', 'click', function () {
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_BUTTON; ?>').parent('td').parent('tr').show();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_EMAIL; ?>').parent('td').parent('tr').hide();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_SEND_BUTTON; ?>').parent('td').parent('tr').hide();
+            jQuery('#' + '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_TEST_SMTP_CANCEL_BUTTON; ?>').parent('td').parent('tr').hide();
+        });
+    });
+//]]></script>

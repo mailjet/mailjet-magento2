@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="mailjet">
+        <job name="mailjet_syncronize" instance="Mailjet\Mailjet\Cron\Syncronize" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="mailjet_wishlist_reminder" instance="Mailjet\Mailjet\Cron\Wishlist" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+        <job name="mailjet_abandomed_cart" instance="Mailjet\Mailjet\Cron\AbandonedCart" method="execute">
+            <schedule>*/5 * * * *</schedule>
+        </job>
+    </group>
+</config>

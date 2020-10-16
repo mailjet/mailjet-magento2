@@ -1,0 +1,13 @@
+{
+    "name": "mailjet/mailjet-magento2",
+    "autoload": {
+        "psr-4": {"Mailjet\\Mailjet\\":""},
+        "files": ["registration.php"]
+    },
+    "description": "Connect Mailjet with Magento",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "require": {
+        "mailjet/mailjet-apiv3-php": "*"
+    }
+}

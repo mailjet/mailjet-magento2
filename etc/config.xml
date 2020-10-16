@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <mailjet>
+            <account>
+                <smtp_port>587</smtp_port>
+                <use_ssl_tls>tls</use_ssl_tls>
+            </account>
+            <ecommerce>
+                <checkout_checkbox_text>Subscribe to our newsletter</checkout_checkbox_text>
+                <succsess_banner_text>Thank you for subscribing!</succsess_banner_text>
+                <succsess_button_text>Subscribe now</succsess_button_text>
+                <succsess_message>Thank you for subscribing to our newsletter!</succsess_message>
+            </ecommerce>
+        </mailjet>
+        <automation>
+            <abandoned_cart>
+                <abandoned_cart_time>20</abandoned_cart_time>
+                <abandoned_cart_time_type>minutes</abandoned_cart_time_type>
+            </abandoned_cart>
+        </automation>
+    </default>
+</config>

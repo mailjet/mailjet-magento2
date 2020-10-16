@@ -1,0 +1,12 @@
+<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\Api */ ?>
+<?= $block->getButtonHtml() ?>
+<script type="text/javascript">//<![CDATA[
+    require([
+        'prototype'
+    ], function () {
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_API_BUTTON; ?>', 'click', function () {
+            javascript:window.open('<?= \Mailjet\Mailjet\Helper\Data::MAILJET_API_CREDENTIALS_URL; ?>', 'apiwizard','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, ,left=100, top=100, width=500, height=700');
+            return false;
+        });
+    });
+//]]></script>

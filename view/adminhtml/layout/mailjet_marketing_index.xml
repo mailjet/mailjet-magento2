@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+    <update handle="styles"/>
+    <body>
+        <referenceBlock name="menu">
+            <action method="setActive">
+                <argument name="itemId" xsi:type="string">Mailjet_Mailjet::mailjet_menu</argument>
+            </action>
+        </referenceBlock>
+        <referenceContainer name="page.main.actions">
+            <block class="Magento\Backend\Block\Store\Switcher" name="store_switcher"></block>
+        </referenceContainer>
+        <referenceBlock name="content">
+            <block class="Mailjet\Mailjet\Block\Adminhtml\Marketing\Iframe" name="iframe" template="Mailjet_Mailjet::marketing/iframe.phtml"/>
+        </referenceBlock>
+    </body>
+</page>
+

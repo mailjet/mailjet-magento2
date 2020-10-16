@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="Magento_Backend::admin">
+                <resource id="Mailjet_Mailjet::marketing_grid" title="Mailjet Marketing" sortOrder="10"></resource>
+                <resource id="Magento_Backend::stores">
+                    <resource id="Magento_Backend::stores_settings">
+                        <resource id="Magento_Config::config">
+                            <resource id="Mailjet_Mailjet::config_mailjet" title="Mailjet Config Section" translate="title">
+                                <resource id="Mailjet_Mailjet::create_new_list" title="Mailjet Create New Contact List" translate="title"/>
+                                <resource id="Mailjet_Mailjet::resync" title="Mailjet Resync" translate="title"/>
+                            </resource>
+                            <resource id="Mailjet_Mailjet::config_transactional" title="Mailjet Transaction Section" translate="title"></resource>
+                            <resource id="Mailjet_Mailjet::config_automation" title="Mailjet Automation Section" translate="title"></resource>
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

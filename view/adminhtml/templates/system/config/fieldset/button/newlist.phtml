@@ -1,0 +1,70 @@
+<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\NewList */ ?>
+<?= $block->getButtonHtml() ?>
+<script type="text/javascript">//<![CDATA[
+    require([
+        'prototype',
+        'jquery',
+        'mage/mage',
+        'jquery/validate', // Jquery Validation Library
+        'mage/translate' // Magento text translate (Validation message translte as per language)
+    ], function () {
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_NEW_LIST_BUTTON; ?>', 'click', function () {
+            var mailjet_new_list_name_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_NEW_LIST_NAME; ?>';
+            var mailjet_list_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>';
+            var mailjet_new_list_name = jQuery('#' + mailjet_new_list_name_id);
+            var mailjet_list = jQuery('#' + mailjet_list_id);
+
+            if (mailjet_new_list_name.valid()) {
+                mailjet_list.trigger('processStart');
+
+                jQuery.ajax({
+                    url: '<?= $block->getUrl('mailjet/system_config/createnewlist'); ?>',
+                    data: {new_list_name: mailjet_new_list_name.val()},
+                    type: 'POST',
+                    success: function(data) {
+                        if (data.result) {
+                            data.contactList.forEach(function(option) {
+                                mailjet_list.append(jQuery('<option>', {
+                                    value: option.<?= Mailjet\Mailjet\Helper\MailjetAPI::ID; ?>,
+                                    text: jQuery.mage.__('%1 (%2 contacts)').replace('%1', option.<?= Mailjet\Mailjet\Helper\MailjetAPI::NAME; ?>).replace('%2', option.<?= Mailjet\Mailjet\Helper\MailjetAPI::SUBSCRIBER_COUNT; ?>),
+                                }));
+
+                                jQuery("#" + mailjet_list_id + " option[value=" + option.ID + "]").prop('selected', true);
+                                document.getElementById(mailjet_list_id).dispatchEvent(new Event('change'));
+                            });
+
+                            mailjet_new_list_name.val('');
+                        } else if (data.hasOwnProperty('mailjet_error')) {
+                            mailjet_new_list_name.addClass('mage-error');
+                            jQuery('<label class="mage-error" id="' + mailjet_new_list_name_id + '-error">' + data.mailjet_error.ErrorInfo + ' ' + data.mailjet_error.ErrorMessage + '</label>').insertAfter('#' + mailjet_new_list_name_id);
+                        }
+
+                        mailjet_list.trigger('processStop');
+                    }
+                });
+            }
+        });
+
+        jQuery('#<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>').on('click', function () {
+            previous = this.value;
+        }).change(function() {
+            jQuery(this).find('option').each(function(key, el) {
+                jQuery(el).attr('previous', false);
+            });
+
+            jQuery(this).find('option[value=' + previous + ']').attr('previous', true);
+        });
+
+        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_CANCEL_LIST_BUTTON; ?>', 'click', function () {
+            var lastSelectedList = jQuery('#<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>').find('option[previous=true]').attr('value');
+            jQuery('#<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>').val(lastSelectedList);
+            document.getElementById('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>').dispatchEvent(new Event('change'));
+        });
+
+        jQuery.validator.addMethod(
+            'mailjet-mailjet-list', function (value) {
+                return value != 0;
+            }, jQuery.mage.__('Select a Mailjet list')
+        );
+    });
+//]]></script>

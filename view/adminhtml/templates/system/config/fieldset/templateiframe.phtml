@@ -1,0 +1,56 @@
+<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe */ ?>
+<div style="margin-top: 10px;">
+    <?= $block->getButtonHtml(); ?>
+</div>
+<div id="<?= $block->getElementId(); ?>-modal" ></div>
+<script type="text/javascript">//<![CDATA[
+    require([
+        'Magento_Ui/js/modal/modal',
+        'prototype',
+        'jquery',
+        'mage/mage',
+        'mage/translate'
+    ], function (modal) {
+        var button = jQuery('#<?= $block->getButtonId(); ?>');
+        var element = jQuery('#<?= $block->getElementId(); ?>');
+        var modal_popup = jQuery('#<?= $block->getElementId(); ?>-modal');
+        var options = {
+            type: 'popup',
+            responsive: true,
+            innerScroll: true,
+            buttons: [{
+                text: jQuery.mage.__('Close'),
+                class: 'mymodal1',
+                click: function () {
+                    this.closeModal();
+                }
+            }]
+        };
+
+        Event.observe('<?= $block->getButtonId(); ?>', 'click', function () {
+            element.trigger('processStart');
+
+            jQuery.ajax({
+                url: '<?= $block->getUrl('mailjet/system_config/iframe'); ?>',
+                data: {
+                    store_id: '<?= $block->getRequest()->getParam('store'); ?>',
+                    website_id: '<?= $block->getRequest()->getParam('website'); ?>',
+                    template_id: element.val(),
+                },
+                type: 'POST',
+                success: function(data) {
+                    if (data.result) {
+                        modal_popup.html(data.iframe);
+                    } else {
+                        modal_popup.html('<label class="mage-error">' + jQuery.mage.__('Please set up your credentials') + '</label>');
+                    }
+
+                    element.trigger('processStop');
+                    modal(options, modal_popup);
+                    modal_popup.modal("openModal");
+                }
+            });
+
+        });
+    });
+//]]></script>

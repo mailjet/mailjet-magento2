@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Mailjet_Mailjet::mailjet_menu"
+             title="Mailjet"
+             module="Mailjet_Mailjet"
+             sortOrder="110"
+             dependsOnModule="Mailjet_Mailjet"
+             resource="Mailjet_Mailjet::main_menu"
+        />
+        <add id="Mailjet_Mailjet::config_menu"
+             title="Configuration"
+             module="Mailjet_Mailjet"
+             sortOrder="10"
+             resource="Mailjet_Mailjet::config_mailjet"
+             parent="Mailjet_Mailjet::mailjet_menu"
+             action="adminhtml/system_config/edit/section/mailjet"
+        />
+        <add id="Mailjet_Mailjet::marketing_menu"
+             title="Marketing"
+             module="Mailjet_Mailjet"
+             sortOrder="20"
+             resource="Mailjet_Mailjet::marketing_mailjet"
+             parent="Mailjet_Mailjet::mailjet_menu"
+             action="mailjet/marketing"
+        />
+        <add id="Mailjet_Mailjet::transactional_menu"
+             title="Transactional"
+             module="Mailjet_Mailjet"
+             sortOrder="30"
+             resource="Mailjet_Mailjet::transactional_mailjet"
+             parent="Mailjet_Mailjet::mailjet_menu"
+             action="adminhtml/system_config/edit/section/transactional"
+        />
+        <add id="Mailjet_Mailjet::automation_menu"
+             title="Automation"
+             module="Mailjet_Mailjet"
+             sortOrder="30"
+             resource="Mailjet_Mailjet::config_automation"
+             parent="Mailjet_Mailjet::mailjet_menu"
+             action="adminhtml/system_config/edit/section/automation"
+        />
+    </menu>
+</config>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Mailjet\Mailjet\Api\JobRepositoryInterface" type="Mailjet\Mailjet\Model\JobRepository" />
+    <preference for="Mailjet\Mailjet\Api\Data\JobInterface" type="Mailjet\Mailjet\Model\Job" />
+
+    <preference for="Mailjet\Mailjet\Api\ConfigRepositoryInterface" type="Mailjet\Mailjet\Model\ConfigRepository" />
+    <preference for="Mailjet\Mailjet\Api\Data\ConfigInterface" type="Mailjet\Mailjet\Model\Config" />
+
+    <preference for="Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface" type="Mailjet\Mailjet\Model\SubscriberQueueRepository" />
+    <preference for="Mailjet\Mailjet\Api\Data\SubscriberQueueInterface" type="Mailjet\Mailjet\Model\SubscriberQueue" />
+
+    <preference for="Mailjet\Mailjet\Api\ErrorRepositoryInterface" type="Mailjet\Mailjet\Model\ErrorRepository" />
+    <preference for="Mailjet\Mailjet\Api\Data\ErrorInterface" type="Mailjet\Mailjet\Model\Error" />
+
+    <preference for="Mailjet\Mailjet\Api\SubscriberEventInterface" type="Mailjet\Mailjet\Model\Api\SubscriberEvent" />
+
+    <type name="Magento\Framework\Mail\Transport">
+        <plugin name="mailjet_smtp_framework_mail_transport" type="Mailjet\Mailjet\Plugin\Framework\Mail\Transport" />
+    </type>
+    <type name="Magento\Email\Model\Transport">
+        <plugin name="mailjet_smtp_email_model_transport" type="Mailjet\Mailjet\Plugin\Email\Model\Transport" />
+    </type>
+    <type name="Magento\Checkout\Api\ShippingInformationManagementInterface">
+        <plugin name="mailjet_save_newsletter_subscribe_in_quote" type="Mailjet\Mailjet\Plugin\Checkout\ShippingInformationManagement"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\OrderSender">
+        <plugin name="mailjet_new_order_email" type="Mailjet\Mailjet\Plugin\Order\Email\Sender\OrderSender"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\CreditmemoSender">
+        <plugin name="mailjet_new_creditmemo_email" type="Mailjet\Mailjet\Plugin\Order\Email\Sender\CreditmemoSender"/>
+    </type>
+    <type name="Magento\Sales\Model\Order\Email\Sender\ShipmentSender">
+        <plugin name="mailjet_new_shipment_email" type="Mailjet\Mailjet\Plugin\Order\Email\Sender\ShipmentSender"/>
+    </type>
+
+    <type name="Mailjet\Mailjet\Model\Api\Email">
+        <arguments>
+            <argument name="urlBuilder" xsi:type="object" shared="false">Magento\Framework\Url</argument>
+        </arguments>
+    </type>
+</config>

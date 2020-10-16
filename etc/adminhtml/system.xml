@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="mailjet" translate="label" sortOrder="120">
+            <label>Mailjet</label>
+        </tab>
+        <section id="mailjet" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Mailjet</label>
+            <tab>mailjet</tab>
+            <resource>Mailjet_Mailjet::config_mailjet</resource>
+            <group id="hint" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
+                <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Hint</frontend_model>
+            </group>
+            <group id="account" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Account configuration</label>
+                <field id="active" type="select" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Plugin enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[You don't have a Mailjet account yet? <a href="https://app.mailjet.com/signup?aff=magento2" target="_blank">Create an account</a>]]></comment>
+                </field>
+                <field id="api_button" type="button" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\Api</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="api_key" type="text" translate="label" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>API Key</label>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="secret_key" type="obscure" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Secret Key</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\ValidateCredentials</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="subscriber_sync" type="select" translate="label" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Subscribed sync enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="mailjet_list" type="select" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Mailjet List</label>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\MailjetList</source_model>
+                    <validate>mailjet-mailjet-list</validate>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="subscriber_sync">1</field>
+                    </depends>
+                </field>
+                <field id="mailjet_new_list_name" type="text" translate="label" sortOrder="31" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>New list name</label>
+                    <comment><![CDATA[50 characters max]]></comment>
+                    <validate>validate-length minimum-length-1 maximum-length-50</validate>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="subscriber_sync">1</field>
+                        <field id="mailjet_list">0</field>
+                    </depends>
+                </field>
+                <field id="mailjet_new_list_button" type="button" translate="label" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\NewList</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="subscriber_sync">1</field>
+                        <field id="mailjet_list">0</field>
+                    </depends>
+                </field>
+                <field id="sync_preference" type="select" translate="label" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sync preference</label>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\SyncPreference</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="subscriber_sync">1</field>
+                    </depends>
+                </field>
+                <field id="resync_button" type="button" translate="label" sortOrder="40" showInDefault="0" showInWebsite="1" showInStore="0">
+                    <label/>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\Resync</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="subscriber_sync">1</field>
+                    </depends>
+                </field>
+                <field id="unsubscribe_event" type="select" translate="label" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Unsub event enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Automatically sync unsubscribed contacts from Mailjet to Magento.]]></comment>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="smtp_active" type="select" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>SMTP enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <backend_model>Mailjet\Mailjet\Model\System\Config\Backend\TestSmtp</backend_model>
+                    <comment><![CDATA[Deliver Magento transactional emails through Mailjet SMTP.]]></comment>
+                    <depends>
+                        <field id="active">1</field>
+                    </depends>
+                </field>
+                <field id="smtp_port" type="select" translate="label" sortOrder="55" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Port to use for SMTP communication</label>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Port</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="smtp_active">1</field>
+                    </depends>
+                </field>
+                <field id="use_ssl_tls" type="select" translate="label" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Encryption</label>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Ssl</source_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="smtp_active">1</field>
+                        <field id="smtp_port">465</field>
+                    </depends>
+                </field>
+                <field id="test_smtp" type="button" translate="label" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\TestSMTP</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="smtp_active">1</field>
+                    </depends>
+                </field>
+                <field id="test_smtp_email" type="text" translate="label" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient of the test email</label>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="smtp_active">1</field>
+                    </depends>
+                </field>
+                <field id="test_smtp_actions" type="text" translate="label" sortOrder="75" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\TestSMTPActions</frontend_model>
+                    <depends>
+                        <field id="active">1</field>
+                        <field id="smtp_active">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="ecommerce" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Ecommerce configuration</label>
+                <field id="data" type="select" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Ecommerce data enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Automatically import customers e-commerce data (total orders count, total spent, account creation date, last order date) and store it as a contact property inside Mailjet.]]></comment>
+                </field>
+                <field id="checkout_page_subscribe" type="select" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Opt-in inside checkout page enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Invite customers to subscribe to your newsletter by displaying an opt-in checkbox inside the checkout page.]]></comment>
+                </field>
+                <field id="checkout_checkbox_text" type="textarea" translate="label" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Checkbox text</label>
+                    <depends>
+                        <field id="checkout_page_subscribe">1</field>
+                    </depends>
+                </field>
+                <field id="succsess_page_subscribe" type="select" translate="label" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Opt-in inside thank you page enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Invite customers to subscribe to your newsletter by displaying an opt-in checkbox inside the thank you page.]]></comment>
+                </field>
+                <field id="succsess_banner_text" type="textarea" translate="label" sortOrder="16" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Banner text</label>
+                    <depends>
+                        <field id="succsess_page_subscribe">1</field>
+                    </depends>
+                </field>
+                <field id="succsess_button_text" type="text" translate="label" sortOrder="17" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Button text</label>
+                    <depends>
+                        <field id="succsess_page_subscribe">1</field>
+                    </depends>
+                </field>
+                <field id="succsess_message" type="textarea" translate="label" sortOrder="18" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Success message</label>
+                    <depends>
+                        <field id="succsess_page_subscribe">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+        <section id="transactional" translate="label" type="text" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Transactional</label>
+            <tab>mailjet</tab>
+            <resource>Mailjet_Mailjet::config_transactional</resource>
+            <group id="order_notification" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Order notifications</label>
+                <field id="order_confirmation_status" type="select" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order confirmation email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="order_confirmation_template_id" type="select" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="order_confirmation_status">1</field>
+                    </depends>
+                </field>
+                <field id="shipping_confirmation_status" type="select" translate="label" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Shipping confirmation email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="shipping_confirmation_template_id" type="select" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="shipping_confirmation_status">1</field>
+                    </depends>
+                </field>
+                <field id="order_cancellation_status" type="select" translate="label" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Order cancellation email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="order_cancellation_template_id" type="select" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="order_cancellation_status">1</field>
+                    </depends>
+                </field>
+                <field id="refund_confirmation_status" type="select" translate="label" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Refund confirmation email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="refund_confirmation_template_id" type="select" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="refund_confirmation_status">1</field>
+                    </depends>
+                </field>
+            </group>
+            <group id="wishlist_notifications" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Wishlist notifications</label>
+                <field id="wishlist_reminder_status" type="select" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Wishlist reminder email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="wishlist_reminder_template_id" type="select" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="wishlist_reminder_status">1</field>
+                    </depends>
+                </field>
+                <field id="item_back_in_stock_status" type="select" translate="label" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Item back in stock email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="item_back_in_stock_template_id" type="select" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="item_back_in_stock_status">1</field>
+                    </depends>
+                </field>
+                <field id="item_on_sale_status" type="select" translate="label" sortOrder="25" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Item on sale email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="item_on_sale_template_id" type="select" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="item_on_sale_status">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+        <section id="automation" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Automation</label>
+            <tab>mailjet</tab>
+            <resource>Mailjet_Mailjet::config_automation</resource>
+            <group id="abandoned_cart" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Abandoned cart</label>
+                <field id="abandoned_cart_status" type="select" translate="label" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Abandoned cart email enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="abandoned_cart_time" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sending time</label>
+                    <depends>
+                        <field id="abandoned_cart_status">1</field>
+                    </depends>
+                </field>
+                <field id="abandoned_cart_time_type" type="select" translate="label" sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label/>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\TimeType</source_model>
+                    <depends>
+                        <field id="abandoned_cart_status">1</field>
+                    </depends>
+                </field>
+                <field id="abandoned_cart_template_id" type="select" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email detail</label>
+                    <frontend_model>Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe</frontend_model>
+                    <source_model>Mailjet\Mailjet\Model\System\Config\Source\Template</source_model>
+                    <depends>
+                        <field id="abandoned_cart_status">1</field>
+                    </depends>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
