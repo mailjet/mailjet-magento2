@@ -37,7 +37,7 @@
     </table>
     <table name="mailjet_subscriber_queue" resource="default" engine="innodb" comment="Mailjet Subscriber Queue">
         <column xsi:type="int" name="subscriber_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Subscriber Id"/>
-        <column xsi:type="varchar" name="property" nullable="false" length="255" comment="Subscriber property"/>
+        <column xsi:type="text" name="property" nullable="false" comment="Subscriber property"/>
         <column xsi:type="varchar" name="email" nullable="false" length="255" comment="Subscriber Email"/>
         <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Name Email"/>
         <column xsi:type="varchar" name="action" nullable="false" length="32" comment="Subscriber Action"/>

@@ -47,7 +47,7 @@ interface SubscriberQueueInterface
     /**
      * Get property
      *
-     * @return String
+     * @return array
      */
     public function getProperty();
 
@@ -105,7 +105,7 @@ interface SubscriberQueueInterface
     /**
      * Set property
      *
-     * @param Int $property
+     * @param array $property
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setProperty($property);

@@ -32,7 +32,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Get property
      *
-     * @return String
+     * @return array
      */
     public function getProperty()
     {
@@ -114,7 +114,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set property
      *
-     * @param Int $property
+     * @param array $property
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setProperty($property)
