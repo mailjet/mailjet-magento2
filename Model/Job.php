@@ -4,6 +4,11 @@ namespace Mailjet\Mailjet\Model;
 
 class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mailjet\Api\Data\JobInterface
 {
+    /**
+     * Job model construct
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init(\Mailjet\Mailjet\Model\ResourceModel\Job::class);
@@ -82,7 +87,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setId($id)
@@ -93,7 +98,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set ID
      *
-     * @param Int $jobId
+     * @param  Int $jobId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setJobId($jobId)
@@ -104,7 +109,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set action
      *
-     * @param String $action
+     * @param  String $action
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setAction($action)
@@ -115,7 +120,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set config id
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setConfigId($configId)
@@ -126,7 +131,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set config id
      *
-     * @param String $createdAt
+     * @param  String $createdAt
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setCreatedAt($createdAt)
@@ -137,7 +142,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set executed at
      *
-     * @param String $executedAt
+     * @param  String $executedAt
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setExecutedAt($executedAt)
@@ -148,7 +153,7 @@ class Job extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mai
     /**
      * Set error id
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setErrorId($errorId)

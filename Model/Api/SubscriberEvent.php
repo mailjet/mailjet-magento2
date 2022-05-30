@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Model\Api;
 
+use Magento\Newsletter\Model\Subscriber;
+use Mailjet\Mailjet\Helper\MailjetAPI;
+
 class SubscriberEvent
 {
     /**
@@ -22,8 +25,8 @@ class SubscriberEvent
     /**
      * Subscriber Event
      *
-     * @param \Magento\Framework\App\RequestInterface $request
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
+     * @param \Magento\Framework\App\RequestInterface                              $request
+     * @param \Mailjet\Mailjet\Model\Api\Connection                                $apiConnection
      * @param \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory $subscriberCollectionFactory
      */
     public function __construct(
@@ -38,20 +41,20 @@ class SubscriberEvent
 
     /**
      * Mailjet unsubscribe event
-     *
      */
     public function unsub()
     {
         $post = json_decode($this->request->getContent(), true);
 
-        if (!empty($post[\Mailjet\Mailjet\Helper\MailjetAPI::MESSAGE_ID]) && !empty($post['mj_contact_id']) && !empty($post['email'])) {
-            $message = $this->apiConnection->getConnection()->getMessage($post[\Mailjet\Mailjet\Helper\MailjetAPI::MESSAGE_ID]);
+        if (!empty($post[MailjetAPI::MESSAGE_ID]) && !empty($post['mj_contact_id']) && !empty($post['email'])) {
+            $message = $this->apiConnection->getConnection()->getMessage($post[MailjetAPI::MESSAGE_ID]);
 
-            if (!empty($message[0]) && $message[0][\Mailjet\Mailjet\Helper\MailjetAPI::CONTACT_ID] == $post['mj_contact_id']) {
-                $subscribers = $this->subscriberCollectionFactory->create()->addFieldToFilter('subscriber_email', $post['email']);
+            if (!empty($message[0]) && $message[0][MailjetAPI::CONTACT_ID] == $post['mj_contact_id']) {
+                $subscribers = $this->subscriberCollectionFactory->create()
+                    ->addFieldToFilter('subscriber_email', $post['email']);
 
                 foreach ($subscribers as $subscriber) {
-                    if ($subscriber->getId() && $subscriber->getSubscriberStatus() == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED) {
+                    if ($subscriber->getId() && $subscriber->getSubscriberStatus() == Subscriber::STATUS_SUBSCRIBED) {
                         $subscriber->unsubscribe();
                     }
                 }

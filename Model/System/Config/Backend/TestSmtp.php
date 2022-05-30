@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Model\System\Config\Backend;
 
+use Magento\Framework\Exception\LocalizedException;
+
 class TestSmtp extends \Magento\Framework\App\Config\Value
 {
     /**
@@ -20,14 +22,14 @@ class TestSmtp extends \Magento\Framework\App\Config\Value
      * @param array $data
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\App\Config\ScopeConfigInterface $config,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
+        \Mailjet\Mailjet\Helper\Data                            $dataHelper,
+        \Magento\Framework\Model\Context                        $context,
+        \Magento\Framework\Registry                             $registry,
+        \Magento\Framework\App\Config\ScopeConfigInterface      $config,
+        \Magento\Framework\App\Cache\TypeListInterface          $cacheTypeList,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
+        \Magento\Framework\Data\Collection\AbstractDb           $resourceCollection = null,
+        array                                                   $data = []
     ) {
         $this->dataHelper = $dataHelper;
 
@@ -59,12 +61,14 @@ class TestSmtp extends \Magento\Framework\App\Config\Value
                 foreach (\Mailjet\Mailjet\Helper\Data::SMTP_PORTS as $port) {
                     if ($this->dataHelper->testSmtpConnection($port, 'tls')) {
                         $hasAvailablePort = true;
-                        throw new \Magento\Framework\Exception\LocalizedException(__('Warding: Port %1 with %2 is not available. Available %3 with TLS', $configPort, $configSsl, $port));
+                        throw new LocalizedException(__('Warding: Port %1 with %2 is not available.
+                         Available %3 with TLS', $configPort, $configSsl, $port));
                     }
                 }
 
                 if (!$hasAvailablePort) {
-                    throw new \Magento\Framework\Exception\LocalizedException(__('Warding: Connection to Mailjet\'s SMTP couldn\'t be established. Please make sure your hosting is not blocking the SMTP ports and try again.'));
+                    throw new LocalizedException(__('Warding: Connection to Mailjet\'s SMTP couldn\'t be established.
+                     Please make sure your hosting is not blocking the SMTP ports and try again.'));
                 }
             }
         }

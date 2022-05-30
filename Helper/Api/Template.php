@@ -2,16 +2,53 @@
 
 namespace Mailjet\Mailjet\Helper\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 
 trait Template
 {
+    /**
+     * Get response
+     *
+     * @return mixed
+     */
     abstract public function getResponce();
+
+    /**
+     * Get error
+     *
+     * @return mixed
+     */
     abstract public function getError();
+
+    /**
+     * Set response
+     *
+     * @param array $responce
+     * @return mixed
+     */
     abstract protected function setResponce($responce);
+
+    /**
+     * Set error
+     *
+     * @param array $error
+     * @return mixed
+     */
     abstract protected function setError($error);
+
+    /**
+     * Get client
+     *
+     * @return mixed
+     */
     abstract protected function getClient();
 
+    /**
+     * Create template
+     *
+     * @param array $data
+     * @return array
+     */
     public function createTemplate($data)
     {
         $body = [
@@ -40,13 +77,20 @@ trait Template
         }
     }
 
+    /**
+     * Get template content
+     *
+     * @param string|int $templateId
+     * @return array
+     */
     public function getTemplateContent($templateId)
     {
         $data = [
             MailjetAPI::ID => (int)$templateId
         ];
 
-        $this->setResponce($this->getClient()->get(\Mailjet\Resources::$TemplateDetailcontent, $data, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->get(\Mailjet\Resources::$TemplateDetailcontent, $data, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -55,6 +99,13 @@ trait Template
         }
     }
 
+    /**
+     * Add template content
+     *
+     * @param string|int $templateId
+     * @param array $data
+     * @return array
+     */
     public function addTemplateContent($templateId, $data)
     {
         $body = [
@@ -67,7 +118,8 @@ trait Template
             ]
         ];
 
-        $this->setResponce($this->getClient()->post(\Mailjet\Resources::$TemplateDetailcontent, $body, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->post(\Mailjet\Resources::$TemplateDetailcontent, $body, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -76,6 +128,13 @@ trait Template
         }
     }
 
+    /**
+     * Update template content
+     *
+     * @param string|int $templateId
+     * @param array $data
+     * @return array
+     */
     public function updateTemplateContent($templateId, $data)
     {
         $body = [
@@ -88,7 +147,8 @@ trait Template
             ]
         ];
 
-        $this->setResponce($this->getClient()->put(\Mailjet\Resources::$TemplateDetailcontent, $body, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->put(\Mailjet\Resources::$TemplateDetailcontent, $body, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -97,6 +157,12 @@ trait Template
         }
     }
 
+    /**
+     * Get template
+     *
+     * @param string|int $templateId
+     * @return array
+     */
     public function getTemplate($templateId)
     {
         $body = [
@@ -112,6 +178,13 @@ trait Template
         }
     }
 
+    /**
+     * Get templates
+     *
+     * @param string|int $offset
+     * @param string|int $purpose
+     * @return array
+     */
     public function getTemplates($offset, $purpose)
     {
         $body = [
@@ -131,6 +204,12 @@ trait Template
         }
     }
 
+    /**
+     * Delete template
+     *
+     * @param int $id
+     * @return array
+     */
     public function deleteTemplate($id)
     {
         $data = [

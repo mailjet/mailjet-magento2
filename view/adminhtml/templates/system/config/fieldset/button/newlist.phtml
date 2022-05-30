@@ -1,4 +1,8 @@
-<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\NewList */ ?>
+<?php
+/* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\NewList */
+/* @var  $escaper \Magento\Framework\Escaper */
+//phpcs:disable
+?>
 <?= $block->getButtonHtml() ?>
 <script type="text/javascript">//<![CDATA[
     require([
@@ -18,15 +22,15 @@
                 mailjet_list.trigger('processStart');
 
                 jQuery.ajax({
-                    url: '<?= $block->getUrl('mailjet/system_config/createnewlist'); ?>',
+                    url: '<?= $escaper->escapeUrl($block->getUrl('mailjet/system_config/createnewlist')); ?>',
                     data: {new_list_name: mailjet_new_list_name.val()},
                     type: 'POST',
                     success: function(data) {
                         if (data.result) {
                             data.contactList.forEach(function(option) {
                                 mailjet_list.append(jQuery('<option>', {
-                                    value: option.<?= Mailjet\Mailjet\Helper\MailjetAPI::ID; ?>,
-                                    text: jQuery.mage.__('%1 (%2 contacts)').replace('%1', option.<?= Mailjet\Mailjet\Helper\MailjetAPI::NAME; ?>).replace('%2', option.<?= Mailjet\Mailjet\Helper\MailjetAPI::SUBSCRIBER_COUNT; ?>),
+                                    value: option.<?= /* @noEscape */ Mailjet\Mailjet\Helper\MailjetAPI::ID; ?>,
+                                    text: jQuery.mage.__('%1 (%2 contacts)').replace('%1', option.<?= /* @noEscape */ Mailjet\Mailjet\Helper\MailjetAPI::NAME; ?>).replace('%2', option.<?= /* @noEscape */ Mailjet\Mailjet\Helper\MailjetAPI::SUBSCRIBER_COUNT; ?>),
                                 }));
 
                                 jQuery("#" + mailjet_list_id + " option[value=" + option.ID + "]").prop('selected', true);
@@ -68,3 +72,4 @@
         );
     });
 //]]></script>
+<?php //phpcs:enable ?>

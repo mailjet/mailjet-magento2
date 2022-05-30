@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Controller\Adminhtml\System\Config;
 
+use Magento\Store\Model\ScopeInterface;
+use Mailjet\Mailjet\Helper\Data;
+
 class SendEmail extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\AbstractAction
 {
     /**
@@ -15,18 +18,18 @@ class SendEmail extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abst
     private $mailMessageFactory;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Backend\App\Action\Context              $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Mailjet\Mailjet\Model\Framework\Mail\Transport $transport
-     * @param \Magento\Framework\MailMessageFactory $mailMessageFactory
+     * @param \Mailjet\Mailjet\Model\Api\Connection            $apiConnection
+     * @param \Mailjet\Mailjet\Helper\Data                     $dataHelper
+     * @param \Mailjet\Mailjet\Model\Framework\Mail\Transport  $transport
+     * @param \Magento\Framework\MailMessageFactory            $mailMessageFactory
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \Mailjet\Mailjet\Model\Api\Connection $apiConnection,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
+        Data $dataHelper,
         \Mailjet\Mailjet\Model\Framework\Mail\Transport $transport,
         \Magento\Framework\Mail\MessageFactory $mailMessageFactory
     ) {
@@ -66,11 +69,18 @@ class SendEmail extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abst
                 $secretKey = $this->getRequest()->getParam('secret_key');
             } else {
                 if ($this->getRequest()->getParam('store_id')) {
-                    $secretKey = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY, $this->getRequest()->getParam('store_id'));
+                    $secretKey = $this->dataHelper->getConfigValue(
+                        Data::CONFIG_PATH_ACCOUNT_SECRET_KEY,
+                        $this->getRequest()->getParam('store_id')
+                    );
                 } elseif ($this->getRequest()->getParam('website_id')) {
-                    $secretKey = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY, $this->getRequest()->getParam('website_id'), \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES);
+                    $secretKey = $this->dataHelper->getConfigValue(
+                        Data::CONFIG_PATH_ACCOUNT_SECRET_KEY,
+                        $this->getRequest()->getParam('website_id'),
+                        ScopeInterface::SCOPE_WEBSITES
+                    );
                 } else {
-                    $secretKey = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY);
+                    $secretKey = $this->dataHelper->getConfigValue(Data::CONFIG_PATH_ACCOUNT_SECRET_KEY);
                 }
 
                 $secretKey = $this->apiConnection->getEncryptor()->decrypt($secretKey);
@@ -82,7 +92,7 @@ class SendEmail extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abst
                 $ssl = $this->getRequest()->getParam('use_ssl_tls');
             }
 
-            $config['host'] = \Mailjet\Mailjet\Helper\Data::SMTP_HOST;
+            $config['host'] = Data::SMTP_HOST;
             $config['port'] = $port;
             $config['ssl'] = $ssl;
             $config['username'] = $apiKey;
@@ -121,6 +131,8 @@ class SendEmail extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abst
     }
 
     /**
+     * Determines whether current user is allowed to access Action
+     *
      * @return bool
      */
     protected function _isAllowed()

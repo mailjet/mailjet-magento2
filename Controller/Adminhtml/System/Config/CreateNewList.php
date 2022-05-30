@@ -28,6 +28,8 @@ class CreateNewList extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\
     }
 
     /**
+     * Determines whether current user is allowed to access Action
+     *
      * @return bool
      */
     protected function _isAllowed()

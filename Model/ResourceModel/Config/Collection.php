@@ -15,6 +15,12 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
         );
     }
 
+    /**
+     * Add groups
+     *
+     * @param array $groups
+     * @return $this
+     */
     public function addGroups($groups)
     {
         foreach ($groups as $group) {

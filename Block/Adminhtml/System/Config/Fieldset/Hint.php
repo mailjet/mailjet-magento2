@@ -2,7 +2,10 @@
 
 namespace Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset;
 
-class Hint extends \Magento\Backend\Block\Template implements \Magento\Framework\Data\Form\Element\Renderer\RendererInterface
+use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Framework\Data\Form\Element\Renderer\RendererInterface;
+
+class Hint extends \Magento\Backend\Block\Template implements RendererInterface
 {
     /**
      * @var string
@@ -16,9 +19,10 @@ class Hint extends \Magento\Backend\Block\Template implements \Magento\Framework
 
     /**
      * Hint constructor.
+     *
      * @param \Magento\Framework\Module\ResourceInterface $moduleResource
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param array $data
+     * @param \Magento\Backend\Block\Template\Context     $context
+     * @param array                                       $data
      */
     public function __construct(
         \Magento\Framework\Module\ResourceInterface $moduleResource,
@@ -31,14 +35,21 @@ class Hint extends \Magento\Backend\Block\Template implements \Magento\Framework
     }
 
     /**
-     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * Render
+     *
+     * @param  AbstractElement $element
      * @return mixed
      */
-    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function render(AbstractElement $element)
     {
         return $this->toHtml();
     }
 
+    /**
+     * Get Module Version
+     *
+     * @return false|string
+     */
     public function getModuleVersion()
     {
         return $this->moduleResource->getDbVersion(\Mailjet\Mailjet\Helper\Data::MODULE_NAME);

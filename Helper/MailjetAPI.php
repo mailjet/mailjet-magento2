@@ -2,124 +2,133 @@
 
 namespace Mailjet\Mailjet\Helper;
 
-use \Mailjet\Mailjet\Helper\Api\Webhook;
-use \Mailjet\Mailjet\Helper\Api\Contact;
-use \Mailjet\Mailjet\Helper\Api\ContactList;
-use \Mailjet\Mailjet\Helper\Api\Message;
-use \Mailjet\Mailjet\Helper\Api\ContactProperty;
-use \Mailjet\Mailjet\Helper\Api\Segment;
-use \Mailjet\Mailjet\Helper\Api\ApiToken;
-use \Mailjet\Mailjet\Helper\Api\Template;
-use \Mailjet\Mailjet\Helper\Api\Sender;
-use \Mailjet\Mailjet\Helper\Api\Email;
+use Mailjet\Mailjet\Helper\Api\Webhook;
+use Mailjet\Mailjet\Helper\Api\Contact;
+use Mailjet\Mailjet\Helper\Api\ContactList;
+use Mailjet\Mailjet\Helper\Api\Message;
+use Mailjet\Mailjet\Helper\Api\ContactProperty;
+use Mailjet\Mailjet\Helper\Api\Segment;
+use Mailjet\Mailjet\Helper\Api\ApiToken;
+use Mailjet\Mailjet\Helper\Api\Template;
+use Mailjet\Mailjet\Helper\Api\Sender;
+use Mailjet\Mailjet\Helper\Api\Email;
 
 class MailjetAPI
 {
-    use Webhook, Contact, ContactList, Message, ContactProperty, Segment, ApiToken, Template, Sender, Email;
+    use Webhook;
+    use Contact;
+    use ContactList;
+    use Message;
+    use ContactProperty;
+    use Segment;
+    use ApiToken;
+    use Template;
+    use Sender;
+    use Email;
 
-    const TO = 'To';
-    const CC = 'Cc';
-    const ID = 'ID';
-    const BCC = 'Bcc';
-    const URL = 'Url';
-    const VARS = 'Vars';
-    const DATA = 'Data';
-    const BODY = 'body';
-    const NAME = 'Name';
-    const FROM = 'From';
-    const LIMIT = 'Limit';
-    const TOKEN = 'Token';
-    const VALUE = 'Value';
-    const EMAIL = 'Email';
-    const OFFSET = 'Offset';
-    const SENDER = 'Sender';
-    const LOCALE = 'Locale';
-    const AUTHOR = 'Author';
-    const ACTION = 'Action';
-    const STATUS = 'Status';
-    const FILTERS = 'Filters';
-    const CONTENT = 'Content';
-    const SUBJECT = 'Subject';
-    const HEADERS = 'Headers';
-    const MJ_PRIO = 'Mj-prio';
-    const PRESETS = 'Presets';
-    const GLOBALS = 'Globals';
-    const URL_TAGS = 'URLTags';
-    const MESSAGES = 'Messages';
-    const PRIORITY = 'Priority';
-    const FILENAME = 'Filename';
-    const PURPOSES = 'Purposes';
-    const CONTACTS = 'Contacts';
-    const REPLY_TO = 'Reply-to';
-    const TEXTPART = 'TextPart';
-    const HTMLPART = 'HTMLPart';
-    const CUSTOM_ID = 'CustomID';
-    const FROM_NAME = 'FromName';
-    const EDIT_MODE = 'EditMode';
-    const DATA_TYPE = 'Datatype';
-    const IS_BACKUP = 'IsBackup';
-    const VALID_FOR = 'ValidFor';
-    const IS_ACTIVE = 'IsActive';
-    const TEXT_PART = 'Text-Part';
-    const HTML_PART = 'Html-part';
-    const VARIABLES = 'Variables';
-    const COPYRIGHT = 'Copyright';
-    const CONTENT_ID = 'ContentID';
-    const FROM_EMAIL = 'FromEmail';
-    const OWNER_TYPE = 'OwnerType';
-    const IS_STARRED = 'IsStarred';
-    const TOKEN_TYPE = 'TokenType';
-    const NAME_SPACE = 'NameSpace';
-    const CONTACT_ID = 'ContactID';
-    const MESSAGE_ID = 'MessageID';
-    const EVENT_TYPE = 'EventType';
-    const IS_DELETED = 'IsDeleted';
-    const RECIPIENTS = 'Recipients';
-    const CATEGORIES = 'Categories';
-    const API_KEY_ALT = 'APIKeyALT';
-    const PROPERTIES = 'Properties';
-    const EXPRESSION = 'Expression';
-    const TEMPLATE_ID = 'TemplateID';
-    const SENDER_NAME = 'SenderName';
-    const TRACK_OPENS = 'TrackOpens';
-    const ATTACHMENTS = 'Attachments';
-    const MJ_CAMPAIGN = 'Mj-campaign';
-    const DESCRIPTION = 'Description';
-    const MJ_CUSTOMID = 'Mj-CustomID';
-    const SANDBOX_MODE = 'SandboxMode';
-    const TRACK_CLICKS = 'TrackClicks';
-    const SENDER_EMAIL = 'SenderEmail';
-    const MJML_CONTENT = 'MJMLContent';
-    const CONTENT_TYPE = 'Content-type';
-    const MJ_TRACKOPEN = 'Mj-trackopen';
-    const EVENT_PAYLOAD = 'EventPayload';
-    const BASE64_CONTENT = 'Base64Content';
-    const MJ_TEMPLATE_ID = 'Mj-TemplateID';
-    const ALLOWED_ACCESS = 'AllowedAccess';
-    const BASE_64_CONTENT = 'Base64Content';
-    const CUSTOM_CAMPAIGN = 'CustomCampaign';
-    const MJ_EVENT_PAYLOAD = 'Mj-EventPayload';
-    const SUBSCRIBER_COUNT = 'SubscriberCount';
-    const TEMPLATE_LANGUAGE = 'TemplateLanguage';
-    const INLINE_ATTACHMENTS = 'Inline_attachments';
-    const INLINED_ATTACHMENTS = 'InlinedAttachments';
-    const MONITORING_CATEGORY = 'MonitoringCategory';
-    const DEDUPLICATE_CAMPAIGN = 'DeduplicateCampaign';
-    const MJ_TEMPLATE_LANGUAGE = 'Mj-TemplateLanguage';
-    const ADVANCE_ERROR_HANDLING = 'AdvanceErrorHandling';
-    const TEMPLATE_ERROR_DELIVER = 'TemplateErrorDeliver';
-    const MJ_MONITORING_CATEGORY = 'Mj-MonitoringCategory';
-    const MJ_DEDUPLICATE_CAMPAIGN = 'Mj-deduplicatecampaign';
-    const TEMPLATE_ERROR_REPORTING = 'TemplateErrorReporting';
-    const MJ_TEMPLATE_ERROR_DELIVER = 'Mj-TemplateErrorDeliver';
-    const MJ_TEMPLATE_ERROR_REPORTING = 'Mj-TemplateErrorReporting';
-    const IS_TEXT_PART_GENERATION_ENABLED = 'IsTextPartGenerationEnabled';
+    public const    TO = 'To';
+    public const    CC = 'Cc';
+    public const    ID = 'ID';
+    public const    BCC = 'Bcc';
+    public const    URL = 'Url';
+    public const    VARS = 'Vars';
+    public const    DATA = 'Data';
+    public const    BODY = 'body';
+    public const    NAME = 'Name';
+    public const    FROM = 'From';
+    public const    LIMIT = 'Limit';
+    public const    TOKEN = 'Token';
+    public const    VALUE = 'Value';
+    public const    EMAIL = 'Email';
+    public const    OFFSET = 'Offset';
+    public const    SENDER = 'Sender';
+    public const    LOCALE = 'Locale';
+    public const    AUTHOR = 'Author';
+    public const    ACTION = 'Action';
+    public const    STATUS = 'Status';
+    public const    FILTERS = 'Filters';
+    public const    CONTENT = 'Content';
+    public const    SUBJECT = 'Subject';
+    public const    HEADERS = 'Headers';
+    public const    MJ_PRIO = 'Mj-prio';
+    public const    PRESETS = 'Presets';
+    public const    GLOBALS = 'Globals';
+    public const    URL_TAGS = 'URLTags';
+    public const    MESSAGES = 'Messages';
+    public const    PRIORITY = 'Priority';
+    public const    FILENAME = 'Filename';
+    public const    PURPOSES = 'Purposes';
+    public const    CONTACTS = 'Contacts';
+    public const    REPLY_TO = 'Reply-to';
+    public const    TEXTPART = 'TextPart';
+    public const    HTMLPART = 'HTMLPart';
+    public const    CUSTOM_ID = 'CustomID';
+    public const    FROM_NAME = 'FromName';
+    public const    EDIT_MODE = 'EditMode';
+    public const  DATA_TYPE = 'Datatype';
+    public const  IS_BACKUP = 'IsBackup';
+    public const  VALID_FOR = 'ValidFor';
+    public const  IS_ACTIVE = 'IsActive';
+    public const  TEXT_PART = 'Text-Part';
+    public const  HTML_PART = 'Html-part';
+    public const  VARIABLES = 'Variables';
+    public const  COPYRIGHT = 'Copyright';
+    public const  CONTENT_ID = 'ContentID';
+    public const  FROM_EMAIL = 'FromEmail';
+    public const  OWNER_TYPE = 'OwnerType';
+    public const  IS_STARRED = 'IsStarred';
+    public const  TOKEN_TYPE = 'TokenType';
+    public const  NAME_SPACE = 'NameSpace';
+    public const  CONTACT_ID = 'ContactID';
+    public const  MESSAGE_ID = 'MessageID';
+    public const  EVENT_TYPE = 'EventType';
+    public const  IS_DELETED = 'IsDeleted';
+    public const  RECIPIENTS = 'Recipients';
+    public const  CATEGORIES = 'Categories';
+    public const  API_KEY_ALT = 'APIKeyALT';
+    public const  PROPERTIES = 'Properties';
+    public const  EXPRESSION = 'Expression';
+    public const  TEMPLATE_ID = 'TemplateID';
+    public const  SENDER_NAME = 'SenderName';
+    public const  TRACK_OPENS = 'TrackOpens';
+    public const  ATTACHMENTS = 'Attachments';
+    public const  MJ_CAMPAIGN = 'Mj-campaign';
+    public const  DESCRIPTION = 'Description';
+    public const  MJ_CUSTOMID = 'Mj-CustomID';
+    public const  SANDBOX_MODE = 'SandboxMode';
+    public const  TRACK_CLICKS = 'TrackClicks';
+    public const  SENDER_EMAIL = 'SenderEmail';
+    public const  MJML_CONTENT = 'MJMLContent';
+    public const  CONTENT_TYPE = 'Content-type';
+    public const  MJ_TRACKOPEN = 'Mj-trackopen';
+    public const  EVENT_PAYLOAD = 'EventPayload';
+    public const  BASE64_CONTENT = 'Base64Content';
+    public const  MJ_TEMPLATE_ID = 'Mj-TemplateID';
+    public const  ALLOWED_ACCESS = 'AllowedAccess';
+    public const  BASE_64_CONTENT = 'Base64Content';
+    public const  CUSTOM_CAMPAIGN = 'CustomCampaign';
+    public const  MJ_EVENT_PAYLOAD = 'Mj-EventPayload';
+    public const  SUBSCRIBER_COUNT = 'SubscriberCount';
+    public const  TEMPLATE_LANGUAGE = 'TemplateLanguage';
+    public const  INLINE_ATTACHMENTS = 'Inline_attachments';
+    public const  INLINED_ATTACHMENTS = 'InlinedAttachments';
+    public const  MONITORING_CATEGORY = 'MonitoringCategory';
+    public const  DEDUPLICATE_CAMPAIGN = 'DeduplicateCampaign';
+    public const  MJ_TEMPLATE_LANGUAGE = 'Mj-TemplateLanguage';
+    public const  ADVANCE_ERROR_HANDLING = 'AdvanceErrorHandling';
+    public const  TEMPLATE_ERROR_DELIVER = 'TemplateErrorDeliver';
+    public const  MJ_MONITORING_CATEGORY = 'Mj-MonitoringCategory';
+    public const  MJ_DEDUPLICATE_CAMPAIGN = 'Mj-deduplicatecampaign';
+    public const  TEMPLATE_ERROR_REPORTING = 'TemplateErrorReporting';
+    public const  MJ_TEMPLATE_ERROR_DELIVER = 'Mj-TemplateErrorDeliver';
+    public const  MJ_TEMPLATE_ERROR_REPORTING = 'Mj-TemplateErrorReporting';
+    public const  IS_TEXT_PART_GENERATION_ENABLED = 'IsTextPartGenerationEnabled';
 
     /**
-     * @var String
+     * @var     String
      * @example | subscribe | subscribe_only_new | delete | unsubscribe
      */
-    const CONTACT_ACTIONS = [
+    public const  CONTACT_ACTIONS = [
         'subscribe'          => 'addforce',
         'subscribe_only_new' => 'addnoforce',
         'delete'             => 'remove',
@@ -127,10 +136,10 @@ class MailjetAPI
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | open | click | bounce | spam | blocked | unsub | sent
      */
-    const WEBHOOK_EVENTS = [
+    public const  WEBHOOK_EVENTS = [
         'open'         => 'open',
         'click'        => 'click',
         'bounce'       => 'bounce',
@@ -141,19 +150,19 @@ class MailjetAPI
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | dead | alive
      */
-    const WEBHOOK_STATUS = [
+    public const  WEBHOOK_STATUS = [
         'dead'        => 'dead',
         'alive'       => 'alive',
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | string | integer | float | boolean | datetime |
      */
-    const PROPERTY_DATA_TYPE = [
+    public const  PROPERTY_DATA_TYPE = [
         'string'        => 'str',
         'integer'       => 'int',
         'float'         => 'float',
@@ -162,19 +171,19 @@ class MailjetAPI
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | static | historic
      */
-    const PROPERTY_NAME_SPACE = [
+    public const  PROPERTY_NAME_SPACE = [
         'static'        => 'static',
         'historic'      => 'historic'
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | drag_and_drop_builder | html_builder | saved_section | mjml
      */
-    const TEMPLATE_EDIT_MODE = [
+    public const  TEMPLATE_EDIT_MODE = [
         'drag_and_drop_builder' => 1,
         'html_builder'          => 2,
         'saved_section'         => 3,
@@ -182,26 +191,26 @@ class MailjetAPI
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | marketing | transactional | automation
      */
-    const TEMPLATE_PURPOSE = [
+    public const  TEMPLATE_PURPOSE = [
         'marketing'     => 'marketing',
         'transactional' => 'transactional',
         'automation'    => 'automation'
     ];
 
     /**
-     * @var String
+     * @var     String
      * @example | apikey | user | global
      */
-    const TEMPLATE_OWNER_TYPE = [
+    public const  TEMPLATE_OWNER_TYPE = [
         'apikey' => 'apikey',
         'user'   => 'user',
         'global' => 'global'
     ];
 
-    const TEMPLATE_RESULT_LIMIT = 100;
+    public const  TEMPLATE_RESULT_LIMIT = 100;
 
     /**
      * @var \Mailjet\Client
@@ -223,17 +232,34 @@ class MailjetAPI
      */
     private $apiKey;
 
+    /**
+     * Set credentials
+     *
+     * @param string $apiKey
+     * @param string $secretKey
+     * @return void
+     */
     public function setCredentials($apiKey, $secretKey)
     {
         $this->apiKey = $apiKey;
         $this->client = new \Mailjet\Client($apiKey, $secretKey);
     }
 
+    /**
+     * Get api key
+     *
+     * @return string
+     */
     public function getApiKey()
     {
         return $this->apiKey;
     }
 
+    /**
+     * Validate credentials
+     *
+     * @return mixed
+     */
     public function validateCredentials()
     {
         $this->responce = $this->client->get(\Mailjet\Resources::$Myprofile, [], ['version' => 'v3']);
@@ -241,16 +267,32 @@ class MailjetAPI
         return $this->responce->success();
     }
 
+    /**
+     * Get responce
+     *
+     * @return array
+     */
     public function getResponce()
     {
         return $this->responce;
     }
 
+    /**
+     * Get error
+     *
+     * @return array
+     */
     public function getError()
     {
         return $this->error;
     }
 
+    /**
+     * Set response
+     *
+     * @param array $responce
+     * @return void
+     */
     protected function setResponce($responce)
     {
         $this->responce = $responce;
@@ -260,11 +302,22 @@ class MailjetAPI
         }
     }
 
+    /**
+     * Set error
+     *
+     * @param array $error
+     * @return void
+     */
     protected function setError($error)
     {
         $this->error = $error;
     }
 
+    /**
+     * Get client
+     *
+     * @return \Mailjet\Client|null
+     */
     protected function getClient()
     {
         return $this->client;

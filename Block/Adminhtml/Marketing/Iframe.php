@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Block\Adminhtml\Marketing;
 
+use Magento\Framework\Exception\NoSuchEntityException;
+use Mailjet\Mailjet\Helper\Iframe as HelperIframe;
+
 class Iframe extends \Magento\Backend\Block\Template
 {
     /**
@@ -17,10 +20,10 @@ class Iframe extends \Magento\Backend\Block\Template
     /**
      * Iframe constructor.
      *
-     * @param \Mailjet\Mailjet\Model\Api\Iframe $apiIframe
+     * @param \Mailjet\Mailjet\Model\Api\Iframe          $apiIframe
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param array $data
+     * @param \Magento\Backend\Block\Template\Context    $context
+     * @param array                                      $data
      */
     public function __construct(
         \Mailjet\Mailjet\Model\Api\Iframe $apiIframe,
@@ -34,8 +37,14 @@ class Iframe extends \Magento\Backend\Block\Template
         parent::__construct($context, $data);
     }
 
+    /**
+     * Get Iframe
+     *
+     * @return String
+     * @throws NoSuchEntityException
+     */
     public function getIframe()
     {
-        return $this->apiIframe->getIframeHTML($this->storeManager->getStore()->getId(), \Mailjet\Mailjet\Helper\Iframe::URLS['stats']);
+        return $this->apiIframe->getIframeHTML($this->storeManager->getStore()->getId(), HelperIframe::URLS['stats']);
     }
 }

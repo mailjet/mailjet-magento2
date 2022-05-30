@@ -2,7 +2,9 @@
 
 namespace Mailjet\Mailjet\Model;
 
+use Magento\Framework\Data\Collection;
 use Mailjet\Mailjet\Api\Data\ConfigInterface as DataInterface;
+use Mailjet\Mailjet\Helper\Data;
 use Mailjet\Mailjet\Model\ResourceModel\Config as Resource;
 use Mailjet\Mailjet\Model\ConfigFactory as ModelFactory;
 use Mailjet\Mailjet\Model\ResourceModel\Config\CollectionFactory as CollectionFactory;
@@ -54,11 +56,11 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     private $storeManager;
 
     /**
-     * @param Resource $resource
-     * @param ModelFactory $modelFactory
-     * @param CollectionFactory $collectionFactory
-     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
-     * @param CollectionProcessorInterface $collectionProcessor
+     * @param \Mailjet\Mailjet\Model\ResourceModel\Config $resource
+     * @param \Mailjet\Mailjet\Model\ConfigFactory $modelFactory
+     * @param \Mailjet\Mailjet\Model\ResourceModel\Config\CollectionFactory $collectionFactory
+     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory
+     * @param \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor
      * @param \Mailjet\Mailjet\Helper\Data $helperData
      * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
@@ -69,7 +71,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
         CollectionFactory $collectionFactory,
         \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
         CollectionProcessorInterface $collectionProcessor,
-        \Mailjet\Mailjet\Helper\Data $helperData,
+        Data $helperData,
         \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
@@ -86,7 +88,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Save Config data
      *
-     * @param DataInterface $config
+     * @param  DataInterface $config
      * @return DataInterface
      * @throws CouldNotSaveException
      */
@@ -103,7 +105,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Load Config data by given Config Identity
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return DataInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
@@ -122,8 +124,8 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @param                                        \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @return                                       \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
@@ -142,7 +144,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Get first result from criteria
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $criteria
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function getFirstResult(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
@@ -157,7 +159,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Delete Config
      *
-     * @param DataInterface $config
+     * @param  DataInterface $config
      * @return bool
      * @throws CouldNotDeleteException
      */
@@ -174,7 +176,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Delete Config by given Config Identity
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
@@ -189,7 +191,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface[] $configs
+     * @return                                       \Mailjet\Mailjet\Api\Data\ConfigInterface[] $configs
      */
     public function getAll()
     {
@@ -204,7 +206,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Get config by StoreId
      *
-     * @param Int $storeId
+     * @param  Int $storeId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function getByStoreId($storeId)
@@ -226,14 +228,16 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     {
         $collection = $this->collectionFactory->create()
             ->addFieldToFilter('deleted', ['null' => true])
-            ->addGroups([
+            ->addGroups(
+                [
                 DataInterface::API_KEY,
                 DataInterface::SECRET_KEY,
                 DataInterface::ENABLED,
                 DataInterface::UNSUBSCRIBE_EVENT
-            ])
-            ->setOrder(DataInterface::ENABLED, \Magento\Framework\Data\Collection::SORT_ORDER_ASC)
-            ->setOrder(DataInterface::UNSUBSCRIBE_EVENT, \Magento\Framework\Data\Collection::SORT_ORDER_ASC);
+                ]
+            )
+            ->setOrder(DataInterface::ENABLED, Collection::SORT_ORDER_ASC)
+            ->setOrder(DataInterface::UNSUBSCRIBE_EVENT, Collection::SORT_ORDER_ASC);
 
         return $collection;
     }
@@ -247,14 +251,16 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     {
         $collection = $this->collectionFactory->create()
             ->addFieldToFilter('deleted', ['null' => true])
-            ->addGroups([
+            ->addGroups(
+                [
                 DataInterface::API_KEY,
                 DataInterface::SECRET_KEY,
                 DataInterface::ENABLED,
                 DataInterface::ECOMMERCE_DATA
-            ])
-            ->setOrder(DataInterface::ENABLED, \Magento\Framework\Data\Collection::SORT_ORDER_ASC)
-            ->setOrder(DataInterface::ECOMMERCE_DATA, \Magento\Framework\Data\Collection::SORT_ORDER_ASC);
+                ]
+            )
+            ->setOrder(DataInterface::ENABLED, Collection::SORT_ORDER_ASC)
+            ->setOrder(DataInterface::ECOMMERCE_DATA, Collection::SORT_ORDER_ASC);
 
         return $collection;
     }
@@ -262,7 +268,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Generate Configs
      *
-     * @param \Magento\Store\Api\Data\StoreInterface[] | Array | null $stores
+     * @param  \Magento\Store\Api\Data\StoreInterface[]|Array|null $stores
      * @return Void
      */
     public function generateConfigs($stores = null)
@@ -278,13 +284,15 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
                 $storeId = $store;
             }
 
-            $api_key = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_API_KEY, $storeId);
-            $secret_key = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY, $storeId);
-            $mailjet_list = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_MAILJET_LIST, $storeId);
-            $sync_preference = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SYNC_PREFERENCE, $storeId);
-            $active = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_ACTIVE, $storeId);
-            $unsubscribe_event = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_UNSUBSCRIBE_EVENT, $storeId);
-            $ecommerce_data = $this->helperData->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_DATA, $storeId);
+            $api_key = $this->helperData->getConfigValue(Data::CONFIG_PATH_ACCOUNT_API_KEY, $storeId);
+            $secret_key = $this->helperData->getConfigValue(Data::CONFIG_PATH_ACCOUNT_SECRET_KEY, $storeId);
+            $mailjet_list = $this->helperData->getConfigValue(Data::CONFIG_PATH_ACCOUNT_MAILJET_LIST, $storeId);
+            $sync_preference = $this->helperData
+                ->getConfigValue(Data::CONFIG_PATH_ACCOUNT_SYNC_PREFERENCE, $storeId);
+            $active = $this->helperData->getConfigValue(Data::CONFIG_PATH_ACCOUNT_ACTIVE, $storeId);
+            $unsubscribe_event = $this->helperData
+                ->getConfigValue(Data::CONFIG_PATH_ACCOUNT_UNSUBSCRIBE_EVENT, $storeId);
+            $ecommerce_data = $this->helperData->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_DATA, $storeId);
 
             $filter = $this->searchCriteriaBuilder
                 ->addFilter(DataInterface::API_KEY, $api_key, 'eq')

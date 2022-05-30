@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Controller\Adminhtml\System\Config;
 
+use Mailjet\Mailjet\Helper\Iframe as HelperIframe;
+
 class Iframe extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\AbstractAction
 {
     /**
@@ -15,12 +17,12 @@ class Iframe extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
     protected $storeManager;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Backend\App\Action\Context              $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Mailjet\Mailjet\Model\Api\Iframe $apiIframe
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Mailjet\Mailjet\Model\Api\Connection            $apiConnection
+     * @param \Mailjet\Mailjet\Helper\Data                     $dataHelper
+     * @param \Mailjet\Mailjet\Model\Api\Iframe                $apiIframe
+     * @param \Magento\Store\Model\StoreManagerInterface       $storeManager
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
@@ -45,6 +47,7 @@ class Iframe extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
      * Execute view action
      *
      * @return \Magento\Framework\Controller\ResultInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute()
     {
@@ -54,12 +57,14 @@ class Iframe extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
             if ($this->getRequest()->getParam('store_id')) {
                 $storeId = $this->getRequest()->getParam('store_id');
             } elseif ($this->getRequest()->getParam('website_id')) {
-                $storeId = $this->storeManager->getWebsite($this->getRequest()->getParam('website_id'))->getDefaultGroup()->getDefaultStoreId();
+                $storeId = $this->storeManager->getWebsite($this->getRequest()->getParam('website_id'))
+                    ->getDefaultGroup()->getDefaultStoreId();
             } else {
                 $storeId = $this->storeManager->getDefaultStoreView()->getId();
             }
 
-            $iframe = $this->apiIframe->getIframeHTML($storeId, \Mailjet\Mailjet\Helper\Iframe::URLS['template'], $this->getRequest()->getParam('template_id'));
+            $iframe = $this->apiIframe
+                ->getIframeHTML($storeId, HelperIframe::URLS['template'], $this->getRequest()->getParam('template_id'));
 
             if ($iframe) {
                 $result = ['result' => true, 'iframe' => $iframe];
@@ -72,6 +77,8 @@ class Iframe extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
     }
 
     /**
+     * Determines whether current user is allowed to access Action
+     *
      * @return bool
      */
     protected function _isAllowed()

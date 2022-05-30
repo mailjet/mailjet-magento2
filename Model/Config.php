@@ -4,6 +4,11 @@ namespace Mailjet\Mailjet\Model;
 
 class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mailjet\Api\Data\ConfigInterface
 {
+    /**
+     * Config construct
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init(\Mailjet\Mailjet\Model\ResourceModel\Config::class);
@@ -152,7 +157,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setId($id)
@@ -163,7 +168,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set ID
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setConfigId($configId)
@@ -174,7 +179,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set api key
      *
-     * @param String $apiKey
+     * @param  String $apiKey
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setApiKey($apiKey)
@@ -185,7 +190,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set secret key
      *
-     * @param String $secretKey
+     * @param  String $secretKey
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setSecretKey($secretKey)
@@ -196,7 +201,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set list
      *
-     * @param String $list
+     * @param  String $list
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setList($list)
@@ -207,7 +212,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set sync preference
      *
-     * @param Int $syncPreference
+     * @param  Int $syncPreference
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setSyncPreference($syncPreference)
@@ -218,7 +223,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set store id
      *
-     * @param Int $storeId
+     * @param  int $storeId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setStoreId($storeId)
@@ -229,7 +234,8 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set unsubscribe event
      *
-     * @return Int
+     * @param int $event
+     * @return \Mailjet\Mailjet\Model\Config
      */
     public function setUnsubscribeEvent($event)
     {
@@ -239,7 +245,8 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set ecommerce data
      *
-     * @return Int
+     * @param int $ecommerceData
+     * @return \Mailjet\Mailjet\Model\Config
      */
     public function setEcommerceData($ecommerceData)
     {
@@ -249,7 +256,8 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set enabled
      *
-     * @return Int
+     * @param int $enabled
+     * @return \Mailjet\Mailjet\Model\Config
      */
     public function setEnabled($enabled)
     {
@@ -259,7 +267,8 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Get iframe token
      *
-     * @return String
+     * @param string $iframeToken
+     * @return \Mailjet\Mailjet\Model\Config
      */
     public function setIframeToken($iframeToken)
     {
@@ -269,7 +278,8 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Get iframe token expire
      *
-     * @return String
+     * @param string $iframeTokenExpire
+     * @return \Mailjet\Mailjet\Model\Config
      */
     public function setIframeTokenExpire($iframeTokenExpire)
     {
@@ -279,7 +289,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set deleted
      *
-     * @param Int $deleted
+     * @param  int $deleted
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setDeleted($deleted)
@@ -290,7 +300,7 @@ class Config extends \Magento\Framework\Model\AbstractModel implements \Mailjet\
     /**
      * Set has errors
      *
-     * @param Int $hasErrors
+     * @param  int $hasErrors
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setHasErrors($hasErrors)

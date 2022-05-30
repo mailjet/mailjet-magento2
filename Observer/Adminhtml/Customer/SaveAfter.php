@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Observer\Adminhtml\Customer;
 
+use Magento\Customer\Api\CustomerMetadataInterface;
+use Magento\Newsletter\Model\Subscriber;
+
 class SaveAfter implements \Magento\Framework\Event\ObserverInterface
 {
     /**
@@ -18,7 +21,7 @@ class SaveAfter implements \Magento\Framework\Event\ObserverInterface
      * Customer Save After constructor.
      *
      * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
-     * @param \Magento\Newsletter\Model\ResourceModel\Subscriber $subscriberResourceModel
+     * @param \Magento\Newsletter\Model\ResourceModel\Subscriber      $subscriberResourceModel
      */
     public function __construct(
         \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository,
@@ -31,7 +34,7 @@ class SaveAfter implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -40,12 +43,12 @@ class SaveAfter implements \Magento\Framework\Event\ObserverInterface
          * @var $customer \Magento\Customer\Model\Customer
          */
         $customer = $observer->getCustomer();
-        $originalRequestData = $observer->getRequest()->getPostValue(\Magento\Customer\Api\CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER);
+        $originalRequestData = $observer->getRequest()->getPostValue(CustomerMetadataInterface::ENTITY_TYPE_CUSTOMER);
 
         if (!isset($originalRequestData['entity_id'])) {
             $subscriber = $this->subscriberResourceModel->loadByCustomerData($customer);
 
-            if ($subscriber && $subscriber->getSubscriberStatus() == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED) {
+            if ($subscriber && $subscriber->getSubscriberStatus() == Subscriber::STATUS_SUBSCRIBED) {
                 $this->subscriberQueueRepository->subscribe($subscriber);
             } else {
                 $this->subscriberQueueRepository->unsubscribe($customer);

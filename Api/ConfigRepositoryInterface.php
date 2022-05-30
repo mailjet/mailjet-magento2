@@ -7,7 +7,7 @@ interface ConfigRepositoryInterface
     /**
      * Save config.
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface $config
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -16,7 +16,7 @@ interface ConfigRepositoryInterface
     /**
      * Retrieve config.
      *
-     * @param int $configId
+     * @param  int $configId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -25,7 +25,7 @@ interface ConfigRepositoryInterface
     /**
      * Retrieve configs matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\Framework\Api\SearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -34,7 +34,7 @@ interface ConfigRepositoryInterface
     /**
      * Get first result from criteria
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $criteria
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function getFirstResult(\Magento\Framework\Api\SearchCriteriaInterface $criteria);
@@ -42,7 +42,7 @@ interface ConfigRepositoryInterface
     /**
      * Delete config.
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface $config
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -51,7 +51,7 @@ interface ConfigRepositoryInterface
     /**
      * Delete config by ID.
      *
-     * @param int $configId
+     * @param  int $configId
      * @return bool true on success
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -70,7 +70,7 @@ interface ConfigRepositoryInterface
     /**
      * Get config by StoreId
      *
-     * @param Int $storeId
+     * @param  Int $storeId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function getByStoreId($storeId);
@@ -92,7 +92,7 @@ interface ConfigRepositoryInterface
     /**
      * Generate Configs
      *
-     * @param \Magento\Store\Api\Data\StoreInterface[] | Array | null $stores
+     * @param  \Magento\Store\Api\Data\StoreInterface[]|Array|null $stores
      * @return Void
      */
     public function generateConfigs($stores = null);

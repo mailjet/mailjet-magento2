@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Model;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Newsletter\Model\Subscriber;
+use Mailjet\Mailjet\Api\Data\ConfigInterface;
 use Mailjet\Mailjet\Api\Data\SubscriberQueueInterface as DataInterface;
 use Mailjet\Mailjet\Model\ResourceModel\SubscriberQueue as Resource;
 use Mailjet\Mailjet\Model\SubscriberQueueFactory as ModelFactory;
@@ -59,15 +62,15 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     private $apiEcommerce;
 
     /**
-     * @param Resource $resource
-     * @param ModelFactory $modelFactory
-     * @param CollectionFactory $collectionFactory
+     * @param Resource                                             $resource
+     * @param ModelFactory                                         $modelFactory
+     * @param CollectionFactory                                    $collectionFactory
      * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param CollectionProcessorInterface $collectionProcessor
-     * @param \Mailjet\Mailjet\Model\ConfigRepository $configRepository
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Mailjet\Mailjet\Model\Api\Ecommerce $apiEcommerce
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder         $searchCriteriaBuilder
+     * @param CollectionProcessorInterface                         $collectionProcessor
+     * @param \Mailjet\Mailjet\Model\ConfigRepository              $configRepository
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface    $customerRepository
+     * @param \Mailjet\Mailjet\Model\Api\Ecommerce                 $apiEcommerce
      */
     public function __construct(
         Resource $resource,
@@ -94,7 +97,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Save Subscriber Queue data
      *
-     * @param DataInterface $queue
+     * @param  DataInterface $queue
      * @return DataInterface
      * @throws CouldNotSaveException
      */
@@ -115,7 +118,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      * @return DataInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function getById($queueId)
+    public function getById(int $queueId)
     {
         $queue = $this->modelFactory->create();
         $this->resource->load($queue, $queueId);
@@ -126,12 +129,14 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     }
 
     /**
-     * Delete SubscriberQueue data by given email
+     *  Delete SubscriberQueue data by given email
      *
-     * @param String $email
-     * @return Void
+     * @param string $email
+     * @param array $actions
+     * @return void
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
      */
-    public function deleteByEmail($email, $actions = [])
+    public function deleteByEmail(string $email, array $actions = [])
     {
         $searchCriteriaBuilder = $this->searchCriteriaBuilder
             ->addFilter(DataInterface::EMAIL, $email, 'eq')
@@ -154,9 +159,10 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      * Delete SubscriberQueue data by given email
      *
      * @param String $email
+     * @param array $actions
      * @return DataInterface
      */
-    public function getByEmail($email, $actions = [])
+    public function getByEmail(string $email, $actions = [])
     {
         $searchCriteriaBuilder = $this->searchCriteriaBuilder
             ->addFilter(DataInterface::EMAIL, $email, 'eq')
@@ -174,7 +180,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Get first result from criteria
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $criteria
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function getFirstResult(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
@@ -191,8 +197,8 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @param                                        \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @return                                       \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
@@ -211,7 +217,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Delete Subscriber Queue
      *
-     * @param DataInterface $queue
+     * @param  DataInterface $queue
      * @return bool
      * @throws CouldNotDeleteException
      */
@@ -228,7 +234,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Delete Subscriber Queue by given Queue Identity
      *
-     * @param Int $queueId
+     * @param  Int $queueId
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
@@ -243,10 +249,11 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      *
      * @param \Magento\Customer\Api\Data\CustomerInterface $customer
      * @param Int $productId
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface|null $config
      * @return void
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function notifySaleProduct(\Magento\Customer\Api\Data\CustomerInterface $customer, $productId, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function notifySaleProduct(CustomerInterface $customer, $productId, ConfigInterface $config = null)
     {
         $this->_notifyProduct($customer, $productId, $config, DataInterface::ACTIONS['SAL']);
     }
@@ -254,17 +261,27 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Set customer to be notified for product back in stock
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param Int $productId
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param  \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param  Int                                          $productId
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface    $config
      * @return void
      */
-    public function notifyStockStatus(\Magento\Customer\Api\Data\CustomerInterface $customer, $productId, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function notifyStockStatus(CustomerInterface $customer, $productId, ConfigInterface $config = null)
     {
         $this->_notifyProduct($customer, $productId, $config, DataInterface::ACTIONS['STK']);
     }
 
-    private function _notifyProduct(\Magento\Customer\Api\Data\CustomerInterface $customer, $productId, $config, $action)
+    /**
+     * Notify product
+     *
+     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param int $productId
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param string $action
+     * @return void
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     */
+    private function _notifyProduct(CustomerInterface $customer, $productId, $config, $action)
     {
         if ($customer->getStoreId()) {
             if (empty($config)) {
@@ -299,11 +316,11 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Update customer Ecommerce data
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param  \Magento\Customer\Api\Data\CustomerInterface      $customer
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface|null    $config
      * @return void
      */
-    public function updateEcommerceData(\Magento\Customer\Api\Data\CustomerInterface $customer, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function updateEcommerceData(CustomerInterface $customer, ConfigInterface $config = null)
     {
         if ($customer->getStoreId()) {
             if (empty($config)) {
@@ -332,11 +349,15 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Set customer to be subscribed to Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param \Magento\Newsletter\Model\Subscriber|\Magento\Customer\Api\Data\CustomerInterface $subscriber
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface|null $config
      * @return void
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function subscribe($subscriber, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function subscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null)
     {
         $this->_subscriberSave($subscriber, $config, DataInterface::ACTIONS['SUB']);
     }
@@ -344,11 +365,15 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Set customer to be unsubscribed to Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param \Magento\Newsletter\Model\Subscriber|\Magento\Customer\Api\Data\CustomerInterface $subscriber
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface|null $config
      * @return void
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function unsubscribe($subscriber, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function unsubscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null)
     {
         $this->_subscriberSave($subscriber, $config, DataInterface::ACTIONS['UNS']);
     }
@@ -356,13 +381,15 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
     /**
      * Set customer to be deleted from Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param \Magento\Newsletter\Model\Subscriber|\Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface|null $config
      * @return void
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function deleteSubscription($customer, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null)
+    public function deleteSubscription(Subscriber|CustomerInterface $customer, ConfigInterface $config = null)
     {
-        if ($customer instanceof \Magento\Customer\Api\Data\CustomerInterface) {
+        if ($customer instanceof CustomerInterface) {
             $email = $customer->getEmail();
         } elseif ($customer instanceof \Magento\Newsletter\Model\Subscriber) {
             $email = $customer->getSubscriberEmail();
@@ -392,6 +419,18 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
         }
     }
 
+    /**
+     * Subscriber save
+     *
+     * @param Subscriber|CustomerInterface $subscriber
+     * @param ConfigInterface $config
+     * @param string $action
+     * @return void
+     * @throws \Magento\Framework\Exception\CouldNotDeleteException
+     * @throws \Magento\Framework\Exception\CouldNotSaveException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     private function _subscriberSave($subscriber, $config, $action)
     {
         if ($subscriber->getStoreId()) {
@@ -406,7 +445,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
                     }
 
                     $email = $subscriber->getSubscriberEmail();
-                } elseif ($subscriber instanceof \Magento\Customer\Api\Data\CustomerInterface) {
+                } elseif ($subscriber instanceof CustomerInterface) {
                     $customer = $subscriber;
                     $email = $customer->getEmail();
                 }
@@ -421,7 +460,8 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
                     ->setConfigId($config->getId());
 
                 if (!empty($customer)) {
-                    $subscriberQueue->setName($customer->getFirstname() . ' ' . $customer->getMiddlename() . ' ' . $customer->getLastname());
+                    $name=$customer->getFirstname() . ' ' . $customer->getMiddlename() . ' ' . $customer->getLastname();
+                    $subscriberQueue->setName($name);
 
                     if ($config->getEcommerceData()) {
                         $data = $this->apiEcommerce->getEcommerceData($customer);

@@ -11,6 +11,7 @@ class Syncronize
 
     /**
      * Syncronize constructor.
+     *
      * @param \Mailjet\Mailjet\Api\JobRepositoryInterface $jobRepository
      */
     public function __construct(
@@ -19,6 +20,11 @@ class Syncronize
         $this->jobRepository    = $jobRepository;
     }
 
+    /**
+     * Execute
+     *
+     * @return void
+     */
     public function execute()
     {
         $this->jobRepository->generateJobs();

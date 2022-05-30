@@ -2,8 +2,9 @@
 
 namespace Mailjet\Mailjet\Model\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI as MailjetAPI;
-use \Mailjet\Mailjet\Helper\Iframe as IframeHelper;
+use Mailjet\Mailjet\Api\Data\ConfigInterface;
+use Mailjet\Mailjet\Helper\MailjetAPI as MailjetAPI;
+use Mailjet\Mailjet\Helper\Iframe as IframeHelper;
 
 class Iframe
 {
@@ -35,11 +36,11 @@ class Iframe
     /**
      * Iframe constructor
      *
-     * @param \Mailjet\Mailjet\Helper\IframeFactory $iframeHelperFactory
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
+     * @param \Mailjet\Mailjet\Helper\IframeFactory          $iframeHelperFactory
+     * @param \Mailjet\Mailjet\Model\Api\Connection          $apiConnection
      * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder   $searchCriteriaBuilder
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime    $dateTime
      */
     public function __construct(
         \Mailjet\Mailjet\Helper\IframeFactory $iframeHelperFactory,
@@ -58,19 +59,21 @@ class Iframe
     /**
      * Get iframe HTML
      *
-     * @param Int $storeId
-     * @param String $page
-     * @param Int $id
+     * @param  Int    $storeId
+     * @param  String $page
+     * @param  Int    $id
      * @return String
      */
     public function getIframeHTML($storeId, $page = null, $id = null)
     {
         $iframeConfig = $this->configRepository->getByStoreId($storeId);
 
-        if ($iframeConfig->getIframeToken() && $iframeConfig->getIframeTokenExpire() && $this->dateTime->gmtTimestamp($iframeConfig->getIframeTokenExpire()) > $this->dateTime->gmtTimestamp()) {
+        if ($iframeConfig->getIframeToken() && $iframeConfig->getIframeTokenExpire()
+            && $this->dateTime->gmtTimestamp($iframeConfig->getIframeTokenExpire()) > $this->dateTime->gmtTimestamp()) {
             $iframeToken = $iframeConfig->getIframeToken();
         } else {
-            $apiToken = $this->apiConnection->getConnection($iframeConfig)->getApiToken(IframeHelper::PAGES, IframeHelper::SESSION_EXPIRATION);
+            $apiToken = $this->apiConnection->getConnection($iframeConfig)
+                ->getApiToken(IframeHelper::PAGES, IframeHelper::SESSION_EXPIRATION);
 
             if (!empty($apiToken[0][MailjetAPI::TOKEN])) {
                 $iframeToken = $apiToken[0][MailjetAPI::TOKEN];
@@ -79,17 +82,18 @@ class Iframe
             }
 
             $filter = $this->searchCriteriaBuilder
-                ->addFilter(\Mailjet\Mailjet\Api\Data\ConfigInterface::API_KEY, $iframeConfig->getApiKey(), 'eq')
-                ->addFilter(\Mailjet\Mailjet\Api\Data\ConfigInterface::SECRET_KEY, $iframeConfig->getSecretKey(), 'eq')
-                ->addFilter(\Mailjet\Mailjet\Api\Data\ConfigInterface::DELETED, true, 'null')
+                ->addFilter(ConfigInterface::API_KEY, $iframeConfig->getApiKey(), 'eq')
+                ->addFilter(ConfigInterface::SECRET_KEY, $iframeConfig->getSecretKey(), 'eq')
+                ->addFilter(ConfigInterface::DELETED, true, 'null')
                 ->create();
 
             $configs = $this->configRepository->getList($filter);
 
             foreach ($configs->getItems() as $config) {
-                $config
-                    ->setIframeToken($iframeToken)
-                    ->setIframeTokenExpire($this->dateTime->gmtDate(null, $this->dateTime->gmtTimestamp() + IframeHelper::SESSION_EXPIRATION));
+                $timestamp = $this->dateTime->gmtTimestamp();
+                $gmtdate = $this->dateTime->gmtDate(null, $timestamp + IframeHelper::SESSION_EXPIRATION);
+
+                $config->setIframeToken($iframeToken)->setIframeTokenExpire($gmtdate);
                 $this->configRepository->save($config);
             }
         }

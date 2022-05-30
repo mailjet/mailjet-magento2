@@ -5,20 +5,20 @@ namespace Mailjet\Mailjet\Observer\Order;
 class SaveAfter implements \Magento\Framework\Event\ObserverInterface
 {
     /**
-     * @var  \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface
+     * @var \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface
      */
     protected $subscriberQueueRepository;
 
     /**
-     * @var  \Magento\Customer\Api\CustomerRepositoryInterface
+     * @var \Magento\Customer\Api\CustomerRepositoryInterface
      */
     protected $customerRepository;
 
     /**
      * Order Save After constructor.
      *
-     * @param  \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
-     * @param  \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface       $customerRepository
      */
     public function __construct(
         \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository,
@@ -31,7 +31,7 @@ class SaveAfter implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)

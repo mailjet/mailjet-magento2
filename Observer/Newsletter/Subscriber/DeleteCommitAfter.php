@@ -23,7 +23,7 @@ class DeleteCommitAfter implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)

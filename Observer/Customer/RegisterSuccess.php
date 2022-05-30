@@ -2,10 +2,12 @@
 
 namespace Mailjet\Mailjet\Observer\Customer;
 
+use Magento\Newsletter\Model\Subscriber;
+
 class RegisterSuccess implements \Magento\Framework\Event\ObserverInterface
 {
     /**
-     * @var  \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface
+     * @var \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface
      */
     protected $subscriberQueueRepository;
 
@@ -17,8 +19,8 @@ class RegisterSuccess implements \Magento\Framework\Event\ObserverInterface
     /**
      * Register Customer constructor.
      *
-     * @param  \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
-     * @param \Magento\Newsletter\Model\ResourceModel\Subscriber $subscriberResourceModel
+     * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
+     * @param \Magento\Newsletter\Model\ResourceModel\Subscriber      $subscriberResourceModel
      */
     public function __construct(
         \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository,
@@ -31,7 +33,7 @@ class RegisterSuccess implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -43,11 +45,9 @@ class RegisterSuccess implements \Magento\Framework\Event\ObserverInterface
 
         $subscriber = $this->subscriberResourceModel->loadByCustomerData($customer);
 
-        if ($subscriber &&
-            (
-                (is_array($subscriber) && $subscriber['subscriber_status'] == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED)
-                || (is_object($subscriber) && $subscriber->getSubscriberStatus() == \Magento\Newsletter\Model\Subscriber::STATUS_SUBSCRIBED)
-            )
+        if ($subscriber
+            && ((is_array($subscriber) && $subscriber['subscriber_status'] == Subscriber::STATUS_SUBSCRIBED)
+            || (is_object($subscriber) && $subscriber->getSubscriberStatus() == Subscriber::STATUS_SUBSCRIBED))
         ) {
             $this->subscriberQueueRepository->subscribe($customer);
         } else {

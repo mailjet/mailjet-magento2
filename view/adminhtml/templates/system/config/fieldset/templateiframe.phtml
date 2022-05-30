@@ -1,8 +1,13 @@
-<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe */ ?>
+<?php
+/* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\TemplateIframe */
+/* @var  $escaper \Magento\Framework\Escaper */
+//phpcs:disable
+
+?>
 <div style="margin-top: 10px;">
     <?= $block->getButtonHtml(); ?>
 </div>
-<div id="<?= $block->getElementId(); ?>-modal" ></div>
+<div id="<?= $escaper->escapeHtmlAttr($block->getElementId()); ?>-modal" ></div>
 <script type="text/javascript">//<![CDATA[
     require([
         'Magento_Ui/js/modal/modal',
@@ -11,9 +16,9 @@
         'mage/mage',
         'mage/translate'
     ], function (modal) {
-        var button = jQuery('#<?= $block->getButtonId(); ?>');
-        var element = jQuery('#<?= $block->getElementId(); ?>');
-        var modal_popup = jQuery('#<?= $block->getElementId(); ?>-modal');
+        var button = jQuery('#<?= $escaper->escapeHtmlAttr($block->getButtonId()); ?>');
+        var element = jQuery('#<?= $escaper->escapeHtmlAttr($block->getElementId()); ?>');
+        var modal_popup = jQuery('#<?= $escaper->escapeHtmlAttr($block->getElementId()); ?>-modal');
         var options = {
             type: 'popup',
             responsive: true,
@@ -27,14 +32,14 @@
             }]
         };
 
-        Event.observe('<?= $block->getButtonId(); ?>', 'click', function () {
+        Event.observe('<?= $escaper->escapeHtmlAttr($block->getButtonId()); ?>', 'click', function () {
             element.trigger('processStart');
 
             jQuery.ajax({
-                url: '<?= $block->getUrl('mailjet/system_config/iframe'); ?>',
+                url: '<?= $escaper->escapeUrl($block->getUrl('mailjet/system_config/iframe')); ?>',
                 data: {
-                    store_id: '<?= $block->getRequest()->getParam('store'); ?>',
-                    website_id: '<?= $block->getRequest()->getParam('website'); ?>',
+                    store_id: '<?= $escaper->escapeHtmlAttr($block->getRequest()->getParam('store')); ?>',
+                    website_id: '<?= $escaper->escapeHtmlAttr($block->getRequest()->getParam('website')); ?>',
                     template_id: element.val(),
                 },
                 type: 'POST',
@@ -54,3 +59,4 @@
         });
     });
 //]]></script>
+<?php //phpcs:enable ?>

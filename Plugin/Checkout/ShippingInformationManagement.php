@@ -2,41 +2,47 @@
 
 namespace Mailjet\Mailjet\Plugin\Checkout;
 
+use Magento\Quote\Model\QuoteRepository;
+use Mailjet\Mailjet\Helper\Data;
+
 class ShippingInformationManagement
 {
     /**
-     * @var \Magento\Quote\Model\QuoteRepository
+     * @var QuoteRepository
      */
     protected $quoteRepository;
 
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var Data
      */
     protected $dataHelper;
 
     /**
-     * @param \Magento\Quote\Model\QuoteRepository $quoteRepository
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
+     * @param QuoteRepository $quoteRepository
+     * @param Data $dataHelper
      */
     public function __construct(
-        \Magento\Quote\Model\QuoteRepository $quoteRepository,
-        \Mailjet\Mailjet\Helper\Data $dataHelper
+        QuoteRepository $quoteRepository,
+        Data            $dataHelper
     ) {
         $this->quoteRepository = $quoteRepository;
-        $this->dataHelper      = $dataHelper;
+        $this->dataHelper = $dataHelper;
     }
 
     /**
+     * Before save address information
+     *
      * @param \Magento\Checkout\Model\ShippingInformationManagement $subject
-     * @param $cartId
+     * @param int $cartId
      * @param \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function beforeSaveAddressInformation(
-        \Magento\Checkout\Model\ShippingInformationManagement $subject,
-        $cartId,
+        \Magento\Checkout\Model\ShippingInformationManagement   $subject,
+        int $cartId,
         \Magento\Checkout\Api\Data\ShippingInformationInterface $addressInformation
     ) {
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
+        if ($this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
             $extensionAttributes = $addressInformation->getExtensionAttributes();
             $newsletterSubscribe = (int)$extensionAttributes->getNewsletterSubscribe();
 

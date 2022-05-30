@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Observer\Catalog\Product;
 
+use Mailjet\Mailjet\Helper\Data;
+
 class SaveBefore implements \Magento\Framework\Event\ObserverInterface
 {
     /**
@@ -57,23 +59,23 @@ class SaveBefore implements \Magento\Framework\Event\ObserverInterface
      * @param \Magento\GroupedProduct\Model\Product\Type\Grouped $groupedType
      */
     public function __construct(
-        \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-        \Magento\Wishlist\Model\ResourceModel\Item\Collection $wishlistItemCollection,
+        \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface          $subscriberQueueRepository,
+        \Magento\Customer\Api\CustomerRepositoryInterface                $customerRepository,
+        \Magento\Wishlist\Model\ResourceModel\Item\Collection            $wishlistItemCollection,
         \Magento\Wishlist\Model\ResourceModel\Wishlist\CollectionFactory $wishlistCollectionFactory,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Bundle\Model\Product\Type $bundleType,
-        \Magento\ConfigurableProduct\Model\Product\Type\Configurable $configurableType,
-        \Magento\GroupedProduct\Model\Product\Type\Grouped $groupedType
+        Data                                                             $dataHelper,
+        \Magento\Bundle\Model\Product\Type                               $bundleType,
+        \Magento\ConfigurableProduct\Model\Product\Type\Configurable     $configurableType,
+        \Magento\GroupedProduct\Model\Product\Type\Grouped               $groupedType
     ) {
-        $this->subscriberQueueRepository  = $subscriberQueueRepository;
-        $this->customerRepository         = $customerRepository;
-        $this->wishlistItemCollection     = $wishlistItemCollection;
-        $this->wishlistCollectionFactory  = $wishlistCollectionFactory;
-        $this->dataHelper                 = $dataHelper;
-        $this->bundleType                 = $bundleType;
-        $this->configurableType           = $configurableType;
-        $this->groupedType                = $groupedType;
+        $this->subscriberQueueRepository = $subscriberQueueRepository;
+        $this->customerRepository = $customerRepository;
+        $this->wishlistItemCollection = $wishlistItemCollection;
+        $this->wishlistCollectionFactory = $wishlistCollectionFactory;
+        $this->dataHelper = $dataHelper;
+        $this->bundleType = $bundleType;
+        $this->configurableType = $configurableType;
+        $this->groupedType = $groupedType;
     }
 
     /**
@@ -84,18 +86,19 @@ class SaveBefore implements \Magento\Framework\Event\ObserverInterface
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-       /**
-        * @var $product \Magento\Catalog\Model\Product
-        */
+        /**
+         * @var $product \Magento\Catalog\Model\Product
+         */
         $product = $observer->getProduct();
 
-        $origionalData = $product->getOrigData();
+        $originData = $product->getOrigData();
 
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_BACK_IN_STOCK_STATUS)
-            && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_BACK_IN_STOCK_TEMPLATE_ID)
+        if ($this->dataHelper->getConfigValue(Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_BACK_IN_STOCK_STATUS)
+            && $this->dataHelper
+                ->getConfigValue(Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_BACK_IN_STOCK_TEMPLATE_ID)
         ) {
-            if (!empty($origionalData['extension_attributes']) && $origionalData['extension_attributes']->getStockItem()) {
-                if (!$origionalData['extension_attributes']->getStockItem()->getIsInStock() && $product->isInStock()) {
+            if (!empty($originData['extension_attributes']) && $originData['extension_attributes']->getStockItem()) {
+                if (!$originData['extension_attributes']->getStockItem()->getIsInStock() && $product->isInStock()) {
                     $wishlists = $this->wishlistCollectionFactory->create()->join(
                         ['items' => $this->wishlistItemCollection->getMainTable()],
                         "items.wishlist_id = main_table.wishlist_id"
@@ -109,10 +112,10 @@ class SaveBefore implements \Magento\Framework\Event\ObserverInterface
             }
         }
 
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_ON_SALE_STATUS)
-            && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_ON_SALE_TEMPLATE_ID)
+        if ($this->dataHelper->getConfigValue(Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_ON_SALE_STATUS)
+            && $this->dataHelper->getConfigValue(Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_ITEM_ON_SALE_TEMPLATE_ID)
         ) {
-            if ($product->isInStock() && empty($origionalData['special_price']) && $product->getSpecialPrice()) {
+            if ($product->isInStock() && empty($originData['special_price']) && $product->getSpecialPrice()) {
                 $groupedIds = $this->groupedType->getParentIdsByChild($product->getId());
                 $configurableIds = $this->configurableType->getParentIdsByChild($product->getId());
                 $bundleIds = $this->bundleType->getParentIdsByChild($product->getId());

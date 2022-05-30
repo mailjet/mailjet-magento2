@@ -15,8 +15,10 @@ class Transport
     protected $escaper;
 
     /**
+     * Transport model construct
+     *
      * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Magento\Framework\Escaper $escaper
+     * @param \Magento\Framework\Escaper   $escaper
      */
     public function __construct(
         \Mailjet\Mailjet\Helper\Data $dataHelper,
@@ -26,6 +28,13 @@ class Transport
         $this->escaper    = $escaper;
     }
 
+    /**
+     * Send smtp message
+     *
+     * @param \Magento\Framework\Mail\EmailMessageInterface|\Zend\Mail\Message $message
+     * @param array $config
+     * @return bool
+     */
     public function sendSmtpMessage($message, $config)
     {
         if (!($message instanceof \Zend\Mail\Message)) {
@@ -33,13 +42,15 @@ class Transport
         }
 
         //set config
-        $options   = new \Zend\Mail\Transport\SmtpOptions([
+        $options   = new \Zend\Mail\Transport\SmtpOptions(
+            [
             // 'name' => '',
             'host' => $config['host'],
             'port' => $config['port'],
-        ]);
+            ]
+        );
 
-        $options->setConnectionClass('LOGIN');
+        $options->setConnectionClass('login');
 
         $connectionConfig = [
             'username' => $config['username'],

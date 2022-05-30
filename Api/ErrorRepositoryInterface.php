@@ -7,7 +7,7 @@ interface ErrorRepositoryInterface
     /**
      * Save error.
      *
-     * @param \Mailjet\Mailjet\Api\Data\ErrorInterface $error
+     * @param  \Mailjet\Mailjet\Api\Data\ErrorInterface $error
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -16,7 +16,7 @@ interface ErrorRepositoryInterface
     /**
      * Retrieve error.
      *
-     * @param int $errorId
+     * @param  int $errorId
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -25,7 +25,7 @@ interface ErrorRepositoryInterface
     /**
      * Retrieve errors matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\Framework\Api\SearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -34,7 +34,7 @@ interface ErrorRepositoryInterface
     /**
      * Delete error.
      *
-     * @param \Mailjet\Mailjet\Api\Data\ErrorInterface $error
+     * @param  \Mailjet\Mailjet\Api\Data\ErrorInterface $error
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -43,7 +43,7 @@ interface ErrorRepositoryInterface
     /**
      * Delete error by ID.
      *
-     * @param int $errorId
+     * @param  int $errorId
      * @return bool true on success
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\Framework\Exception\LocalizedException

@@ -2,6 +2,16 @@
 
 namespace Mailjet\Mailjet\Model\Api\Email;
 
+use Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable;
+use Magento\Customer\Model\Customer;
+use Magento\Directory\Model\Currency;
+use Magento\Quote\Model\Quote\Item;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Model\Order\Shipment;
+use Magento\Sales\Model\ResourceModel\Order\Creditmemo;
+use Magento\Store\Api\Data\StoreInterface;
+use Magento\Store\Model\Store;
+
 class Data extends \Magento\Framework\DataObject
 {
     /**
@@ -75,16 +85,17 @@ class Data extends \Magento\Framework\DataObject
     protected $productRepository;
 
     /**
-     * @var \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable
+     * @var Configurable
      */
     protected $configurableProductResourceModel;
 
     /**
-     * @var \Magento\Store\Api\Data\StoreInterface
+     * @var StoreInterface
      */
     protected $store = null;
 
     /**
+     * Data constructor.
      *
      * @param \Mailjet\Mailjet\Helper\Data $dataHelper
      * @param \Magento\Sales\Model\Order\Email\Container\OrderIdentity $orderIdentity
@@ -100,119 +111,162 @@ class Data extends \Magento\Framework\DataObject
      * @param \Magento\Directory\Model\Currency $currency
      * @param \Magento\Sales\Block\DataProviders\Email\Shipment\TrackingUrl $trackingUrl
      * @param \Magento\Catalog\Api\ProductRepositoryInterface $productRepository
-     * @param \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductResourceModel
+     * @param Configurable $configurableProductResourceModel
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Sales\Model\Order\Email\Container\OrderIdentity $orderIdentity,
-        \Magento\Sales\Model\Order\Email\Container\ShipmentIdentity $shipmentIdentity,
+        \Mailjet\Mailjet\Helper\Data                                  $dataHelper,
+        \Magento\Sales\Model\Order\Email\Container\OrderIdentity      $orderIdentity,
+        \Magento\Sales\Model\Order\Email\Container\ShipmentIdentity   $shipmentIdentity,
         \Magento\Sales\Model\Order\Email\Container\CreditmemoIdentity $creditmemoIdentity,
-        \Magento\Sales\Model\Order\Address\Renderer $addressRenderer,
-        \Magento\Payment\Helper\Data $paymentHelper,
-        \Magento\Framework\UrlInterface $urlBuilder,
-        \Magento\Catalog\Helper\ImageFactory $imageHelperFactory,
-        \Magento\Sales\Block\Order\TotalsFactory $blockTotalsFactory,
-        \Magento\Sales\Model\Order\Pdf\Total\Factory $pdfTotalFactory,
-        \Magento\Sales\Model\Order\Pdf\Config $pdfConfig,
-        \Magento\Directory\Model\Currency $currency,
+        \Magento\Sales\Model\Order\Address\Renderer                   $addressRenderer,
+        \Magento\Payment\Helper\Data                                  $paymentHelper,
+        \Magento\Framework\UrlInterface                               $urlBuilder,
+        \Magento\Catalog\Helper\ImageFactory                          $imageHelperFactory,
+        \Magento\Sales\Block\Order\TotalsFactory                      $blockTotalsFactory,
+        \Magento\Sales\Model\Order\Pdf\Total\Factory                  $pdfTotalFactory,
+        \Magento\Sales\Model\Order\Pdf\Config                         $pdfConfig,
+        Currency                             $currency,
         \Magento\Sales\Block\DataProviders\Email\Shipment\TrackingUrl $trackingUrl,
-        \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
-        \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductResourceModel
+        \Magento\Catalog\Api\ProductRepositoryInterface               $productRepository,
+        Configurable                                                  $configurableProductResourceModel
     ) {
-        $this->dataHelper                        = $dataHelper;
-        $this->orderIdentity                     = $orderIdentity;
-        $this->shipmentIdentity                  = $shipmentIdentity;
-        $this->creditmemoIdentity                = $creditmemoIdentity;
-        $this->addressRenderer                   = $addressRenderer;
-        $this->paymentHelper                     = $paymentHelper;
-        $this->urlBuilder                        = $urlBuilder;
-        $this->imageHelperFactory                = $imageHelperFactory;
-        $this->blockTotalsFactory                = $blockTotalsFactory;
-        $this->pdfTotalFactory                   = $pdfTotalFactory;
-        $this->pdfConfig                         = $pdfConfig;
-        $this->currency                          = $currency;
-        $this->trackingUrl                       = $trackingUrl;
-        $this->productRepository                 = $productRepository;
-        $this->configurableProductResourceModel  = $configurableProductResourceModel;
+        $this->dataHelper = $dataHelper;
+        $this->orderIdentity = $orderIdentity;
+        $this->shipmentIdentity = $shipmentIdentity;
+        $this->creditmemoIdentity = $creditmemoIdentity;
+        $this->addressRenderer = $addressRenderer;
+        $this->paymentHelper = $paymentHelper;
+        $this->urlBuilder = $urlBuilder;
+        $this->imageHelperFactory = $imageHelperFactory;
+        $this->blockTotalsFactory = $blockTotalsFactory;
+        $this->pdfTotalFactory = $pdfTotalFactory;
+        $this->pdfConfig = $pdfConfig;
+        $this->currency = $currency;
+        $this->trackingUrl = $trackingUrl;
+        $this->productRepository = $productRepository;
+        $this->configurableProductResourceModel = $configurableProductResourceModel;
     }
 
+    /**
+     * Set store
+     *
+     * @param StoreInterface $store
+     * @return $this
+     */
     public function setStore($store)
     {
         $this->store = $store;
 
         $data = [
-            'store_name'             => $store->getName(),
-            'store_code'             => $store->getCode(),
-            'store_base_url'         => $this->dataHelper->getConfigValue(\Magento\Store\Model\Store::XML_PATH_SECURE_BASE_URL, $store->getId()),
-            'store_sales_email'      => $this->dataHelper->getConfigValue('trans_email/ident_' . $this->orderIdentity->getEmailIdentity() . '/email', $store->getId()),
-            'store_shipment_email'   => $this->dataHelper->getConfigValue('trans_email/ident_' . $this->shipmentIdentity->getEmailIdentity() . '/email', $store->getId()),
-            'store_creditmemo_email' => $this->dataHelper->getConfigValue('trans_email/ident_' . $this->creditmemoIdentity->getEmailIdentity() . '/email', $store->getId()),
-            'wishlist_url'           => $this->urlBuilder->getUrl('wishlist/index/index'),
-            'checkout_url'           => $this->urlBuilder->getUrl('checkout/index/index'),
+            'store_name' => $store->getName(),
+            'store_code' => $store->getCode(),
+            'store_base_url' => $this->dataHelper->getConfigValue(Store::XML_PATH_SECURE_BASE_URL, $store->getId()),
+            'store_sales_email' => $this->dataHelper->getConfigValue(
+                'trans_email/ident_' . $this->orderIdentity->getEmailIdentity() . '/email',
+                $store->getId()
+            ),
+            'store_shipment_email' => $this->dataHelper->getConfigValue(
+                'trans_email/ident_' . $this->shipmentIdentity->getEmailIdentity() . '/email',
+                $store->getId()
+            ),
+            'store_creditmemo_email' => $this->dataHelper->getConfigValue(
+                'trans_email/ident_' . $this->creditmemoIdentity->getEmailIdentity() . '/email',
+                $store->getId()
+            ),
+            'wishlist_url' => $this->urlBuilder->getUrl('wishlist/index/index'),
+            'checkout_url' => $this->urlBuilder->getUrl('checkout/index/index'),
         ];
 
         $this->addData($data);
         return $this;
     }
 
+    /**
+     * Set order
+     *
+     * @param Order $order
+     * @return $this
+     * @throws \Exception
+     */
     public function setOrder($order)
     {
-        $orderShipping = $order->getIsVirtual() ? '' : $this->addressRenderer->format($order->getShippingAddress(), 'html');
-        $orderBilling  = $this->addressRenderer->format($order->getBillingAddress(), 'html');
-        $orderPayment  = $this->paymentHelper->getInfoBlockHtml($order->getPayment(), $order->getStoreId());
+        $orderShipping = $order->getIsVirtual() ?
+                         '' : $this->addressRenderer->format($order->getShippingAddress(), 'html');
+        $orderBilling = $this->addressRenderer->format($order->getBillingAddress(), 'html');
+        $orderPayment = $this->paymentHelper->getInfoBlockHtml($order->getPayment(), $order->getStoreId());
 
         $data = [
-            'order_increment_id'          => $order->getIncrementId(),
-            'order_created_date'          => $order->getCreatedAt(),
-            'order_coupon_code'           => $order->getCouponCode(),
+            'order_increment_id' => $order->getIncrementId(),
+            'order_created_date' => $order->getCreatedAt(),
+            'order_coupon_code' => $order->getCouponCode(),
             'order_shipping_address_html' => $orderShipping,
-            'order_billing_address_html'  => $orderBilling,
-            'order_payment_html'          => $orderPayment,
-            'order_billing_description'   => $order->getShippingDescription(),
-            'order_currency_code'         => $order->getOrderCurrencyCode(),
-            'customer_email'              => $order->getCustomerEmail(),
-            'customer_prefix'             => $order->getCustomerPrefix(),
-            'customer_sufix'              => $order->getCustomerSuffix(),
-            'customer_firstname'          => $order->getCustomerFirstname(),
-            'customer_middlename'         => $order->getCustomerMiddlename(),
-            'customer_Lastname'           => $order->getCustomerLastname(),
-            'customer_gender'             => $order->getCustomerGender(),
-            'customer_is_guest'           => $order->getCustomerIsGuest(),
+            'order_billing_address_html' => $orderBilling,
+            'order_payment_html' => $orderPayment,
+            'order_billing_description' => $order->getShippingDescription(),
+            'order_currency_code' => $order->getOrderCurrencyCode(),
+            'customer_email' => $order->getCustomerEmail(),
+            'customer_prefix' => $order->getCustomerPrefix(),
+            'customer_sufix' => $order->getCustomerSuffix(),
+            'customer_firstname' => $order->getCustomerFirstname(),
+            'customer_middlename' => $order->getCustomerMiddlename(),
+            'customer_Lastname' => $order->getCustomerLastname(),
+            'customer_gender' => $order->getCustomerGender(),
+            'customer_is_guest' => $order->getCustomerIsGuest(),
         ];
 
         $this->addData($data);
         return $this;
     }
 
+    /**
+     * Set shipment
+     *
+     * @param Shipment $shipment
+     * @return $this
+     */
     public function setShipment($shipment)
     {
         $data = [
-            'shipment_id'                   => $shipment->getIncrementId(),
-            'shipment_customer_note_notify' => $shipment->getCustomerNoteNotify() ? $shipment->getCustomerNoteNotify() : '',
-            'shipment_customer_note'        => (int)$shipment->getCustomerNote(),
+            'shipment_id' => $shipment->getIncrementId(),
+            'shipment_customer_note_notify' => $shipment->getCustomerNoteNotify() ?
+                                               $shipment->getCustomerNoteNotify() : '',
+            'shipment_customer_note' => (int)$shipment->getCustomerNote(),
         ];
 
         $this->addData($data);
         return $this;
     }
 
+    /**
+     * Set customer
+     *
+     * @param Customer $customer
+     * @return $this
+     */
     public function setCustomer($customer)
     {
         $data = [
-            'customer_email'      => $customer->getEmail(),
-            'customer_prefix'     => $customer->getPrefix(),
-            'customer_sufix'      => $customer->getSuffix(),
-            'customer_firstname'  => $customer->getFirstname(),
+            'customer_email' => $customer->getEmail(),
+            'customer_prefix' => $customer->getPrefix(),
+            'customer_sufix' => $customer->getSuffix(),
+            'customer_firstname' => $customer->getFirstname(),
             'customer_middlename' => $customer->getMiddlename(),
-            'customer_Lastname'   => $customer->getLastname(),
-            'customer_gender'     => $customer->getGender(),
-            'customer_is_guest'   => false
+            'customer_Lastname' => $customer->getLastname(),
+            'customer_gender' => $customer->getGender(),
+            'customer_is_guest' => false
         ];
 
         $this->addData($data);
         return $this;
     }
 
+    /**
+     * Set shipment tracking
+     *
+     * @param Order $order
+     * @param Shipment $shipment
+     * @return $this
+     */
     public function setShipmentTracking($order, $shipment)
     {
         $shipmentTrackings = [];
@@ -220,16 +274,23 @@ class Data extends \Magento\Framework\DataObject
 
         foreach ($trackings as $tracking) {
             $shipmentTrackings[] = [
-                'title'           => $tracking->getTitle(),
-                'tracking_url'    => $this->trackingUrl->getUrl($tracking),
+                'title' => $tracking->getTitle(),
+                'tracking_url' => $this->trackingUrl->getUrl($tracking),
                 'tracking_number' => $tracking->getNumber(),
             ];
         }
 
-        $this->addData(['shipment_trackings' => $shipmentTrackings, 'has_shipment_trackings' => (bool)$shipmentTrackings]);
+        $this->addData(['shipment_trackings' => $shipmentTrackings,
+                        'has_shipment_trackings' => (bool)$shipmentTrackings]);
         return $this;
     }
 
+    /**
+     * Set credit memo
+     *
+     * @param Creditmemo $creditMemo
+     * @return $this
+     */
     public function setCreditMemo($creditMemo)
     {
         $data = [
@@ -240,6 +301,11 @@ class Data extends \Magento\Framework\DataObject
         return $this;
     }
 
+    /**
+     * Get params
+     *
+     * @return mixed
+     */
     public function getParams()
     {
         $data = $this->convertToArray();
@@ -249,21 +315,24 @@ class Data extends \Magento\Framework\DataObject
         return $data;
     }
 
-    // Magento\Sales\Model\Order\Item
-    // Magento\Sales\Model\Order\Creditmemo\Item
-    // Magento\Sales\Model\Order\Shipment\Item
-    // String
+    /**
+     * Set Items
+     *
+     * @param []|string $items
+     * @return $this
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function setItems($items)
     {
         $productInfo = [];
-        $currency = $this->dataHelper->getConfigValue(\Magento\Directory\Model\Currency::XML_PATH_CURRENCY_DEFAULT, $this->store->getId());
+        $currency = $this->dataHelper->getConfigValue(Currency::XML_PATH_CURRENCY_DEFAULT, $this->store->getId());
         $currencySymbol = $this->currency->load($currency)->getCurrencySymbol();
 
         foreach ($items as $item) {
-            if (!($item instanceof \Magento\Sales\Model\Order\Item || $item instanceof \Magento\Quote\Model\Quote\Item) && $item->getOrderItem()->getParentItem()) {
+            if (!($item instanceof Order\Item || $item instanceof Item) && $item->getOrderItem()->getParentItem()) {
                 continue;
             }
-            if ($item instanceof \Magento\Quote\Model\Quote\Item && $item->getParentItem()) {
+            if ($item instanceof Item && $item->getParentItem()) {
                 continue;
             } // Magento\Quote\Model\Quote\Item
 
@@ -275,19 +344,23 @@ class Data extends \Magento\Framework\DataObject
                 $product = $this->productRepository->getById($item->getProductId());
                 $productData = $this->getProductImages($product);
             }
-
+// phpcs:disable Generic.Files.LineLength.TooLong
             $productOptions = $item->getProductOptions();
 
-            $productData['product_options']    = !empty($productOptions['attributes_info']) ? $productOptions['attributes_info'] : []; // all
-            $productData['sku']                = $item->getSku(); // all
-            $productData['name']               = $item->getName(); // all
-            $productData['qty_ordered']        = (int)$item->getQtyOrdered(); // Magento\Sales\Model\Order\Item
-            $productData['price']              = $this->formatPrice($item->getPrice(), $currencySymbol); // Magento\Sales\Model\Order\Item, Magento\Quote\Model\Quote\Item
-            $productData['row_total']          = $this->formatPrice($item->getRowTotal(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
-            $productData['discount_amount']    = $this->formatPrice($item->getDiscountAmount(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
-            $productData['qty']                = (int)$item->getQty(); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item, Magento\Quote\Model\Quote\Item
-            $productData['tax_amount']         = $this->formatPrice($item->getTaxAmount(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
-            $productData['row_total_incl_tax'] = $this->formatPrice($item->getRowTotal(0) + $item->getTaxAmount(0) - $item->getDiscountAmount(0), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
+            $productData['product_options'] = !empty($productOptions['attributes_info']) ?
+                                              $productOptions['attributes_info'] : []; // all
+            $productData['sku'] = $item->getSku(); // all
+            $productData['name'] = $item->getName(); // all
+            $productData['qty_ordered'] = (int)$item->getQtyOrdered(); // Magento\Sales\Model\Order\Item
+            $productData['price'] = $this->formatPrice($item->getPrice(), $currencySymbol); // Magento\Sales\Model\Order\Item, Magento\Quote\Model\Quote\Item
+            $productData['row_total'] = $this->formatPrice($item->getRowTotal(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
+            $productData['discount_amount'] = $this->formatPrice($item->getDiscountAmount(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
+            $productData['qty'] = (int)$item->getQty(); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item, Magento\Quote\Model\Quote\Item
+            $productData['tax_amount'] = $this->formatPrice($item->getTaxAmount(), $currencySymbol); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
+            $productData['row_total_incl_tax'] = $this->formatPrice(
+                $item->getRowTotal(0) + $item->getTaxAmount(0) - $item->getDiscountAmount(0),
+                $currencySymbol
+            ); // Magento\Sales\Model\Order\Creditmemo\Item, Magento\Sales\Model\Order\Shipment\Item
 
             $productInfo[] = $productData;
         }
@@ -296,11 +369,19 @@ class Data extends \Magento\Framework\DataObject
         return $this;
     }
 
+    /**
+     * Set product data
+     *
+     * @param array $productsIds
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function setProductData($productsIds)
     {
         $productInfo = [];
         $maxDiscount = 0;
-        $currency = $this->dataHelper->getConfigValue(\Magento\Directory\Model\Currency::XML_PATH_CURRENCY_DEFAULT, $this->store->getId());
+        $currency = $this->dataHelper->getConfigValue(Currency::XML_PATH_CURRENCY_DEFAULT, $this->store->getId());
         $currencySymbol = $this->currency->load($currency)->getCurrencySymbol();
 
         foreach ($productsIds as $productsId) {
@@ -314,15 +395,15 @@ class Data extends \Magento\Framework\DataObject
             }
 
             $productData = $this->getProductImages($product);
-            $productData['store_id']         = $product->getStoreId();
-            $productData['product_type']     = $product->getTypeId();
-            $productData['is_virtual']       = $product->getIsVirtual();
-            $productData['special_price']    = $this->formatPrice($specialPrice, $currencySymbol);
+            $productData['store_id'] = $product->getStoreId();
+            $productData['product_type'] = $product->getTypeId();
+            $productData['is_virtual'] = $product->getIsVirtual();
+            $productData['special_price'] = $this->formatPrice($specialPrice, $currencySymbol);
             $productData['discount_percent'] = $discountPercent;
-            $productData['sku']              = $product->getSku();
-            $productData['name']             = $product->getName();
-            $productData['price']            = $this->formatPrice($price, $currencySymbol);
-            $productData['url']              = $this->getProductUrl($product);
+            $productData['sku'] = $product->getSku();
+            $productData['name'] = $product->getName();
+            $productData['price'] = $this->formatPrice($price, $currencySymbol);
+            $productData['url'] = $this->getProductUrl($product);
 
             $productInfo[] = $productData;
         }
@@ -336,9 +417,16 @@ class Data extends \Magento\Framework\DataObject
         return $this;
     }
 
+    /**
+     * Set totals
+     *
+     * @param \Magento\Sales\Model\ResourceModel\Order\Creditmemo|\Magento\Sales\Model\Order $object
+     * @return $this
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
     public function setTotals($object)
     {
-        if ($object instanceof \Magento\Sales\Model\Order) {
+        if ($object instanceof Order) {
             $totals = [];
             $totalBlock = $this->blockTotalsFactory->create();
             $totalBlock->setOrder($object);
@@ -377,17 +465,30 @@ class Data extends \Magento\Framework\DataObject
         return $this;
     }
 
+    /**
+     *  Get product images
+     *
+     * @param \Magento\Catalog\Model\Product $product
+     * @return array
+     */
     private function getProductImages($product)
     {
         return [
-            'swatch_image'    => $this->getProductImage($product, 'product_swatch_image'),
+            'swatch_image' => $this->getProductImage($product, 'product_swatch_image'),
             'thumbnail_image' => $this->getProductImage($product, 'product_thumbnail_image'),
-            'base_image'      => $this->getProductImage($product, 'product_base_image'),
-            'small_image'     => $this->getProductImage($product, 'product_small_image'),
-            'swatch_image'    => $this->getProductImage($product, 'product_swatch_image'),
+            'base_image' => $this->getProductImage($product, 'product_base_image'),
+            'small_image' => $this->getProductImage($product, 'product_small_image'),
+            'swatch_image' => $this->getProductImage($product, 'product_swatch_image'),
         ];
     }
 
+    /**
+     * Sort totals list
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
     protected function _sortTotalsList($a, $b)
     {
         if (!isset($a['sort_order']) || !isset($b['sort_order'])) {
@@ -397,6 +498,13 @@ class Data extends \Magento\Framework\DataObject
         return $a['sort_order'] <=> $b['sort_order'];
     }
 
+    /**
+     * Format price
+     *
+     * @param float|mixed|null $price
+     * @param string $currency
+     * @return string|void
+     */
     private function formatPrice($price, $currency)
     {
         if (isset($price)) {
@@ -404,10 +512,23 @@ class Data extends \Magento\Framework\DataObject
         }
     }
 
-    private function getProductImage($product, $type, $width = 400, $height = 400)
+    /**
+     * Get product image
+     *
+     * @param \Magento\Catalog\Model\Product $product
+     * @param string $type
+     * @param int $width
+     * @param int $height
+     * @return string
+     */
+    private function getProductImage($product, $type, int $width = 400, int $height = 400)
     {
         try {
-            $url = $this->imageHelperFactory->create()->init($product, $type, ['width' => $width, 'height' => $height, 'keep_aspect_ratio' => true]);
+            $url = $this->imageHelperFactory->create()->init(
+                $product,
+                $type,
+                ['width' => $width, 'height' => $height, 'keep_aspect_ratio' => true]
+            );
             $url->getResizedImageInfo();
 
             return $url->getUrl();
@@ -416,6 +537,13 @@ class Data extends \Magento\Framework\DataObject
         }
     }
 
+    /**
+     * Get product url
+     *
+     * @param \Magento\Catalog\Api\Data\ProductInterface $product
+     * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     private function getProductUrl($product)
     {
         if (!$product->isVisibleInSiteVisibility()) {
@@ -429,6 +557,12 @@ class Data extends \Magento\Framework\DataObject
         return $product->getProductUrl();
     }
 
+    /**
+     * Clean vars
+     *
+     * @param array $vars
+     * @return mixed
+     */
     private function cleanVars($vars)
     {
         foreach ($vars as $key => $var) {
@@ -442,3 +576,4 @@ class Data extends \Magento\Framework\DataObject
         return $vars;
     }
 }
+// phpcs:enable Generic.Files.LineLength.TooLong

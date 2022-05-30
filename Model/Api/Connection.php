@@ -2,84 +2,95 @@
 
 namespace Mailjet\Mailjet\Model\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI as MailjetAPI;
-use \Mailjet\Mailjet\Helper\Data as dataHelper;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Encryption\Encryptor;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Filesystem;
+use Magento\Framework\View\Asset\Repository;
+use Magento\Store\Model\StoreManagerInterface;
+use Mailjet\Mailjet\Api\ConfigRepositoryInterface;
+use Mailjet\Mailjet\Api\Data\ConfigInterface;
+use Mailjet\Mailjet\Helper\MailjetAPI as MailjetAPI;
+use Mailjet\Mailjet\Helper\Data as dataHelper;
+use Mailjet\Mailjet\Helper\MailjetAPIFactory;
 
 class Connection
 {
     /**
-     * @var \Mailjet\Mailjet\Helper\MailjetAPIFactory
+     * @var MailjetAPIFactory
      */
     protected $mailjetAPIFactory;
 
     /**
-     * @var \Magento\Framework\Encryption\Encryptor
+     * @var Encryptor
      */
     protected $encryptor;
 
     /**
-     * @var \Mailjet\Mailjet\Api\ConfigRepositoryInterface
+     * @var ConfigRepositoryInterface
      */
     protected $configRepository;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     protected $storeManager;
 
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var dataHelper
      */
     protected $dataHelper;
 
     /**
-     * @var \Magento\Framework\View\Asset\Repository
+     * @var Repository
      */
     protected $assetRepository;
 
     /**
-     * @var \Magento\Framework\Filesystem
+     * @var Filesystem
      */
     protected $filesystem;
 
     /**
-     * @var \Mailjet\Mailjet\Helper\MailjetAPI[]
+     * @var MailjetAPI[]
      */
     protected $connections = [];
 
     /**
      * Connection constructor.
      *
-     * @param \Mailjet\Mailjet\Helper\MailjetAPIFactory $mailjetAPIFactory
-     * @param \Magento\Framework\Encryption\Encryptor $encryptor
-     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Magento\Framework\View\Asset\Repository $assetRepository
-     * @param \Magento\Framework\Filesystem $filesystem
+     * @param MailjetAPIFactory $mailjetAPIFactory
+     * @param Encryptor $encryptor
+     * @param ConfigRepositoryInterface $configRepository
+     * @param StoreManagerInterface $storeManager
+     * @param dataHelper $dataHelper
+     * @param Repository $assetRepository
+     * @param Filesystem $filesystem
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\MailjetAPIFactory $mailjetAPIFactory,
-        \Magento\Framework\Encryption\Encryptor $encryptor,
-        \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Framework\View\Asset\Repository $assetRepository,
-        \Magento\Framework\Filesystem $filesystem
+        MailjetAPIFactory         $mailjetAPIFactory,
+        Encryptor                 $encryptor,
+        ConfigRepositoryInterface $configRepository,
+        StoreManagerInterface     $storeManager,
+        dataHelper                $dataHelper,
+        Repository                $assetRepository,
+        Filesystem                $filesystem
     ) {
         $this->mailjetAPIFactory = $mailjetAPIFactory;
-        $this->encryptor         = $encryptor;
-        $this->configRepository  = $configRepository;
-        $this->storeManager      = $storeManager;
-        $this->dataHelper        = $dataHelper;
-        $this->assetRepository   = $assetRepository;
-        $this->filesystem        = $filesystem;
+        $this->encryptor = $encryptor;
+        $this->configRepository = $configRepository;
+        $this->storeManager = $storeManager;
+        $this->dataHelper = $dataHelper;
+        $this->assetRepository = $assetRepository;
+        $this->filesystem = $filesystem;
     }
 
     /**
      * Get Encryptor
      *
-     * @return \Magento\Framework\Encryption\Encryptor
+     * @return Encryptor
      */
     public function getEncryptor()
     {
@@ -89,10 +100,11 @@ class Connection
     /**
      * Get Store Connection
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface | null $config
-     * @param String | null $apiKey
-     * @param String | null $secretKey
-     * @return \Mailjet\Mailjet\Helper\MailjetAPI
+     * @param ConfigInterface|null $config
+     * @param string|null $apiKey
+     * @param string|null $secretKey
+     * @return MailjetAPI|null
+     * @throws NoSuchEntityException
      */
     public function getConnection($config = null, $apiKey = null, $secretKey = null)
     {
@@ -107,9 +119,19 @@ class Connection
                 $apiKey = $config->getApiKey();
                 $secretKey = $this->encryptor->decrypt($config->getSecretKey());
             } else {
-                $apiKey = $this->dataHelper->getConfigValue(dataHelper::CONFIG_PATH_ACCOUNT_API_KEY, $store->getId());
-                $secretKey = $this->encryptor->decrypt($this->dataHelper->getConfigValue(dataHelper::CONFIG_PATH_ACCOUNT_SECRET_KEY, $store->getId()));
+                $apiKey = $this->dataHelper->getConfigValue(
+                    dataHelper::CONFIG_PATH_ACCOUNT_API_KEY,
+                    $store->getId()
+                );
+                $secretKey = $this->encryptor->decrypt(
+                    $this->dataHelper->getConfigValue(dataHelper::CONFIG_PATH_ACCOUNT_SECRET_KEY, $store->getId())
+                );
             }
+        }
+
+        if (!$apiKey || !$secretKey) {
+            $apiKey = '';
+            $secretKey = '';
         }
 
         if (empty($this->connections[hash('sha256', $apiKey . $secretKey)])) {
@@ -127,7 +149,7 @@ class Connection
     /**
      * Setup Events
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface | null $config
+     * @param ConfigInterface|null $config
      * @return Void
      */
     public function setupEvents($config = null)
@@ -153,8 +175,8 @@ class Connection
                     } elseif ($webhook[MailjetAPI::URL] != $url) {
                         $data = [
                             'event_type' => $webhook[MailjetAPI::EVENT_TYPE],
-                            'status'     => MailjetAPI::WEBHOOK_STATUS['alive'],
-                            'url'        => $url,
+                            'status' => MailjetAPI::WEBHOOK_STATUS['alive'],
+                            'url' => $url,
                         ];
 
                         $connection->updateWebhook($data);
@@ -170,8 +192,8 @@ class Connection
                 if ($status) {
                     $data = [
                         'event_type' => $event,
-                        'status'     => MailjetAPI::WEBHOOK_STATUS['alive'],
-                        'url'        => $this->dataHelper->getRestApiUrl($event),
+                        'status' => MailjetAPI::WEBHOOK_STATUS['alive'],
+                        'url' => $this->dataHelper->getRestApiUrl($event),
                     ];
 
                     $connection->createWebhook($data);
@@ -183,7 +205,7 @@ class Connection
     /**
      * Setup Properties
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface | null $config
+     * @param ConfigInterface|null $config
      * @return Void
      */
     public function setupProperties($config = null)
@@ -199,11 +221,11 @@ class Connection
                 $connection = $this->getConnection($config);
                 $mailjetProperties = $connection->getProperties();
 
-                foreach (\Mailjet\Mailjet\Helper\Data::REST_API_CONTACT_PROPERTIES as $property) {
+                foreach (dataHelper::REST_API_CONTACT_PROPERTIES as $property) {
                     $hasProperty = false;
 
                     foreach ($mailjetProperties as $mailjetProperty) {
-                        if ($mailjetProperty[\Mailjet\Mailjet\Helper\MailjetAPI::NAME] == $property['name']) {
+                        if ($mailjetProperty[MailjetAPI::NAME] == $property['name']) {
                             $hasProperty = true;
                             break;
                         }
@@ -220,7 +242,7 @@ class Connection
     /**
      * Setup Segments
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface | null $config
+     * @param ConfigInterface|null $config
      * @return Void
      */
     public function setupSegments($config = null)
@@ -236,11 +258,11 @@ class Connection
                 $connection = $this->getConnection($config);
                 $mailjetProperties = $connection->getSegments();
 
-                foreach (\Mailjet\Mailjet\Helper\Data::REST_API_SEGMENTS as $segment) {
+                foreach (dataHelper::REST_API_SEGMENTS as $segment) {
                     $hasSegment = false;
 
                     foreach ($mailjetProperties as $mailjetProperty) {
-                        if ($mailjetProperty[\Mailjet\Mailjet\Helper\MailjetAPI::EXPRESSION] == $segment['expression']) {
+                        if ($mailjetProperty[MailjetAPI::EXPRESSION] == $segment['expression']) {
                             $hasSegment = true;
                             break;
                         }
@@ -257,8 +279,11 @@ class Connection
     /**
      * Setup Templates
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface | null $config
-     * @return Void
+     * @param ConfigInterface|null $config
+     * @param int|null $storeId
+     * @return void
+     * @throws NoSuchEntityException
+     * @throws LocalizedException
      */
     public function setupTemplates($config = null, $storeId = null)
     {
@@ -278,21 +303,24 @@ class Connection
         foreach ($configs as $config) {
             $connection = $this->getConnection($config);
 
-            foreach (\Mailjet\Mailjet\Helper\Data::REST_API_TEMPLATES as $template) {
-                if (!$this->dataHelper->getConfigValue($template['config'], $config->getStoreId()) || !$connection->getTemplate($this->dataHelper->getConfigValue($template['config'], $config->getStoreId()))) {
+            foreach (dataHelper::REST_API_TEMPLATES as $template) {
+                if (!$this->dataHelper->getConfigValue($template['config'], $config->getStoreId())
+                    || !$connection->getTemplate(
+                        $this->dataHelper->getConfigValue($template['config'], $config->getStoreId())
+                    )) {
                     $newTemplateData = [
-                        'author'                          => 'Magento 2 default templates',
-                        'categories'                      => ['basic'],
-                        'copyright'                       => '',
-                        'description'                     => '',
-                        'edit_mode'                       => MailjetAPI::TEMPLATE_EDIT_MODE['drag_and_drop_builder'],
-                        'is_starred'                      => false,
+                        'author' => 'Magento 2 default templates',
+                        'categories' => ['basic'],
+                        'copyright' => '',
+                        'description' => '',
+                        'edit_mode' => MailjetAPI::TEMPLATE_EDIT_MODE['drag_and_drop_builder'],
+                        'is_starred' => false,
                         'is_text_part_generation_enabled' => true,
-                        'locale'                          => 'en_US',
-                        'name'                            => $template['name'],
-                        'owner_type'                      => MailjetAPI::TEMPLATE_OWNER_TYPE['apikey'],
-                        'presets'                         => '',
-                        'purposes'                        => [$template['purpose']],
+                        'locale' => 'en_US',
+                        'name' => $template['name'],
+                        'owner_type' => MailjetAPI::TEMPLATE_OWNER_TYPE['apikey'],
+                        'presets' => '',
+                        'purposes' => [$template['purpose']],
                     ];
 
                     $mjTemplate = $connection->createTemplate($newTemplateData);
@@ -305,24 +333,34 @@ class Connection
                         $mjml = $this->assetRepository->createAsset($template['json_file'], [])->getContent();
                         $html = $this->assetRepository->createAsset($template['html_file'], [])->getContent();
                         $headers = [
-                            MailjetAPI::SENDER_NAME   => !empty($sender[MailjetAPI::NAME]) ? $sender[MailjetAPI::NAME] : $template['subject'],
-                            MailjetAPI::SENDER_EMAIL  => $sender[MailjetAPI::EMAIL],
-                            MailjetAPI::FROM          => $sender[MailjetAPI::EMAIL],
-                            MailjetAPI::SUBJECT       => $template['subject'],
-                            MailjetAPI::REPLY_TO      => $sender[MailjetAPI::EMAIL]
+                            MailjetAPI::SENDER_NAME => !empty($sender[MailjetAPI::NAME]) ?
+                                $sender[MailjetAPI::NAME] : $template['subject'],
+                            MailjetAPI::SENDER_EMAIL => $sender[MailjetAPI::EMAIL],
+                            MailjetAPI::FROM => $sender[MailjetAPI::EMAIL],
+                            MailjetAPI::SUBJECT => $template['subject'],
+                            MailjetAPI::REPLY_TO => $sender[MailjetAPI::EMAIL]
                         ];
 
                         $templateContents = [
-                            'headers'      => $headers,
-                            'html'         => $html,
+                            'headers' => $headers,
+                            'html' => $html,
                             'mjml_content' => json_decode($mjml, true),
-                            'text'         => '',
+                            'text' => '',
                         ];
 
                         $connection->addTemplateContent($mjTemplate[MailjetAPI::ID], $templateContents);
 
-                        $this->dataHelper->saveConfigValue($template['config'], $mjTemplate[MailjetAPI::ID], $config->getStoreId());
-                        $this->dataHelper->saveConfigValue($template['config'], $mjTemplate[MailjetAPI::ID], 0, \Magento\Framework\App\Config\ScopeConfigInterface::SCOPE_TYPE_DEFAULT);
+                        $this->dataHelper->saveConfigValue(
+                            $template['config'],
+                            $mjTemplate[MailjetAPI::ID],
+                            $config->getStoreId()
+                        );
+                        $this->dataHelper->saveConfigValue(
+                            $template['config'],
+                            $mjTemplate[MailjetAPI::ID],
+                            0,
+                            ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+                        );
                     }
                 }
             }
@@ -334,7 +372,7 @@ class Connection
      *
      * @param Int $storeId
      * @return Void
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function importTemplates($storeId)
     {
@@ -342,7 +380,7 @@ class Connection
 
         $connection = $this->getConnection($config);
 
-        foreach (\Mailjet\Mailjet\Helper\Data::REST_API_TEMPLATES as $template) {
+        foreach (dataHelper::REST_API_TEMPLATES as $template) {
             $templateId = $this->dataHelper->getConfigValue($template['config'], $config->getStoreId());
             $mjTemplate = $connection->getTemplate($templateId);
             $update = true;
@@ -351,18 +389,18 @@ class Connection
                 $update = false;
 
                 $newTemplateData = [
-                    'author'                          => 'Magento 2 default templates',
-                    'categories'                      => ['basic'],
-                    'copyright'                       => '',
-                    'description'                     => '',
-                    'edit_mode'                       => MailjetAPI::TEMPLATE_EDIT_MODE['drag_and_drop_builder'],
-                    'is_starred'                      => false,
+                    'author' => 'Magento 2 default templates',
+                    'categories' => ['basic'],
+                    'copyright' => '',
+                    'description' => '',
+                    'edit_mode' => MailjetAPI::TEMPLATE_EDIT_MODE['drag_and_drop_builder'],
+                    'is_starred' => false,
                     'is_text_part_generation_enabled' => true,
-                    'locale'                          => 'en_US',
-                    'name'                            => $template['name'],
-                    'owner_type'                      => MailjetAPI::TEMPLATE_OWNER_TYPE['apikey'],
-                    'presets'                         => '',
-                    'purposes'                        => [$template['purpose']],
+                    'locale' => 'en_US',
+                    'name' => $template['name'],
+                    'owner_type' => MailjetAPI::TEMPLATE_OWNER_TYPE['apikey'],
+                    'presets' => '',
+                    'purposes' => [$template['purpose']],
                 ];
 
                 $mjTemplate = $connection->createTemplate($newTemplateData);
@@ -377,18 +415,18 @@ class Connection
                 $mjml = $this->assetRepository->createAsset($template['json_file'], [])->getContent();
                 $html = $this->assetRepository->createAsset($template['html_file'], [])->getContent();
                 $headers = [
-                    MailjetAPI::SENDER_NAME   => $sender[MailjetAPI::NAME],
-                    MailjetAPI::SENDER_EMAIL  => $sender[MailjetAPI::EMAIL],
-                    MailjetAPI::FROM          => $sender[MailjetAPI::EMAIL],
-                    MailjetAPI::SUBJECT       => $template['subject'],
-                    MailjetAPI::REPLY_TO      => $sender[MailjetAPI::EMAIL]
+                    MailjetAPI::SENDER_NAME => $sender[MailjetAPI::NAME],
+                    MailjetAPI::SENDER_EMAIL => $sender[MailjetAPI::EMAIL],
+                    MailjetAPI::FROM => $sender[MailjetAPI::EMAIL],
+                    MailjetAPI::SUBJECT => $template['subject'],
+                    MailjetAPI::REPLY_TO => $sender[MailjetAPI::EMAIL]
                 ];
 
                 $templateContents = [
-                    'headers'      => $headers,
-                    'html'         => $html,
+                    'headers' => $headers,
+                    'html' => $html,
                     'mjml_content' => json_decode($mjml, true),
-                    'text'         => '',
+                    'text' => '',
                 ];
 
                 if ($update) {
@@ -403,34 +441,39 @@ class Connection
     /**
      * Save as default templates
      *
-     * @param Int $storeId
+     * @param int $storeId
      * @return Void
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function saveAsDefaultTemplates($storeId)
     {
         $config = $this->configRepository->getByStoreId($storeId);
 
         $connection = $this->getConnection($config);
-        $writeDir = $this->filesystem->getDirectoryWrite(\Magento\Framework\App\Filesystem\DirectoryList::ROOT);
+        $writeDir = $this->filesystem->getDirectoryWrite(DirectoryList::ROOT);
 
-        foreach (\Mailjet\Mailjet\Helper\Data::REST_API_TEMPLATES as $template) {
+        foreach (dataHelper::REST_API_TEMPLATES as $template) {
             if ($this->dataHelper->getConfigValue($template['config'], $config->getStoreId())) {
-                $content = $connection->getTemplateContent($this->dataHelper->getConfigValue($template['config'], $config->getStoreId()));
+                $content = $connection->getTemplateContent($this->dataHelper->getConfigValue(
+                    $template['config'],
+                    $config->getStoreId()
+                ));
 
                 if ($content) {
                     try {
-                        $json_file_path = $this->assetRepository->createAsset($template['json_file'], [])->getSourceFile();
+                        $json_file_path = $this->assetRepository->createAsset($template['json_file'], [])
+                            ->getSourceFile();
                     } catch (\Magento\Framework\View\Asset\File\NotFoundException $e) {
-                        throw new \Magento\Framework\Exception\LocalizedException(
+                        throw new LocalizedException(
                             new \Magento\Framework\Phrase('File missing: ' . $template['json_file'])
                         );
                     }
 
                     try {
-                        $html_file_path = $this->assetRepository->createAsset($template['html_file'], [])->getSourceFile();
+                        $html_file_path = $this->assetRepository->createAsset($template['html_file'], [])
+                            ->getSourceFile();
                     } catch (\Magento\Framework\View\Asset\File\NotFoundException $e) {
-                        throw new \Magento\Framework\Exception\LocalizedException(
+                        throw new LocalizedException(
                             new \Magento\Framework\Phrase('File missing: ' . $template['html_file'])
                         );
                     }

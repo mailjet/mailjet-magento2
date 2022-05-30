@@ -18,7 +18,7 @@ class SaveConfig implements \Magento\Framework\Event\ObserverInterface
      * Generate configs constructor.
      *
      * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
+     * @param \Mailjet\Mailjet\Model\Api\Connection          $apiConnection
      */
     public function __construct(
         \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository,
@@ -31,7 +31,7 @@ class SaveConfig implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)

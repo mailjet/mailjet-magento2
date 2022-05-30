@@ -2,6 +2,10 @@
 
 namespace Mailjet\Mailjet\Api;
 
+use Magento\Customer\Api\Data\CustomerInterface;
+use Magento\Newsletter\Model\Subscriber;
+use Mailjet\Mailjet\Api\Data\ConfigInterface;
+
 interface SubscriberQueueRepositoryInterface
 {
     /**
@@ -20,23 +24,25 @@ interface SubscriberQueueRepositoryInterface
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    public function getById($queueId);
+    public function getById(int $queueId);
 
     /**
      * Delete SubscriberQueue data by given email
      *
-     * @param String $email
-     * @return Void
+     * @param string $email
+     * @param array $actions
+     * @return void
      */
-    public function deleteByEmail($email, $actions = []);
+    public function deleteByEmail(string $email, array $actions = []);
 
     /**
      * Delete SubscriberQueue data by given email
      *
-     * @param String $email
+     * @param string $email
+     * @param array $actions
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
-    public function getByEmail($email, $actions = []);
+    public function getByEmail(string $email, $actions = []);
 
     /**
      * Get first result from criteria
@@ -77,56 +83,56 @@ interface SubscriberQueueRepositoryInterface
     /**
      * Set customer to be notified for sale
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param CustomerInterface $customer
      * @param Int $productId
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function notifySaleProduct(\Magento\Customer\Api\Data\CustomerInterface $customer, $productId, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function notifySaleProduct(CustomerInterface $customer, int $productId, ConfigInterface $config = null);
 
     /**
      * Set customer to be notified for product back in stock
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
+     * @param CustomerInterface $customer
      * @param Int $productId
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function notifyStockStatus(\Magento\Customer\Api\Data\CustomerInterface $customer, $productId, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function notifyStockStatus(CustomerInterface $customer, int $productId, ConfigInterface $config = null);
 
     /**
      * Update customer Ecommerce data
      *
-     * @param \Magento\Customer\Api\Data\CustomerInterface $customer
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param CustomerInterface $customer
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function updateEcommerceData(\Magento\Customer\Api\Data\CustomerInterface $customer, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function updateEcommerceData(CustomerInterface $customer, ConfigInterface $config = null);
 
     /**
      * Set customer to be subscribed to Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param CustomerInterface|Subscriber $subscriber
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function subscribe($subscriber, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function subscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null);
 
     /**
      * Set customer to be unsubscribed to Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param CustomerInterface|Subscriber $subscriber
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function unsubscribe($subscriber, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function unsubscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null);
 
     /**
      * Set customer to be deleted from Mailjet
      *
-     * @param \Magento\Newsletter\Model\Subscriber | \Magento\Customer\Api\Data\CustomerInterface $subscriber
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface $config
+     * @param Subscriber|CustomerInterface $customer
+     * @param ConfigInterface|null $config
      * @return void
      */
-    public function deleteSubscription($customer, \Mailjet\Mailjet\Api\Data\ConfigInterface $config = null);
+    public function deleteSubscription(Subscriber|CustomerInterface $customer, ConfigInterface $config = null);
 }

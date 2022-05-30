@@ -8,6 +8,10 @@ class TemplateIframe extends \Magento\Config\Block\System\Config\Form\Field
      * @var string
      */
     protected $_template = 'Mailjet_Mailjet::system/config/fieldset/templateiframe.phtml';
+
+    /**
+     * @var null
+     */
     protected $_element = null;
 
     /**
@@ -41,11 +45,21 @@ class TemplateIframe extends \Magento\Config\Block\System\Config\Form\Field
         return $button->toHtml();
     }
 
+    /**
+     * Get button Id
+     *
+     * @return string
+     */
     public function getButtonId()
     {
         return $this->getElementId() . '_button';
     }
 
+    /**
+     * Get element Id
+     *
+     * @return mixed
+     */
     public function getElementId()
     {
         return $this->_element->getHtmlId();

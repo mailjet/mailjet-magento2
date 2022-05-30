@@ -2,84 +2,107 @@
 
 namespace Mailjet\Mailjet\Cron;
 
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Store\Model\App\Emulation;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Wishlist\Model\ResourceModel\Wishlist\CollectionFactory;
+use Mailjet\Mailjet\Helper\Data;
+use Mailjet\Mailjet\Model\Api\Email;
+
 class Wishlist
 {
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     private $storeManager;
 
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var Data
      */
     private $dataHelper;
 
     /**
-     * @var \Magento\Wishlist\Model\ResourceModel\Wishlist\CollectionFactory
+     * @var CollectionFactory
      */
     private $wishlistCollectionFactory;
 
     /**
-     * @var \Mailjet\Mailjet\Model\Api\Email
+     * @var Email
      */
     private $apiEmail;
 
     /**
-     * @var \Magento\Customer\Api\CustomerRepositoryInterface
+     * @var CustomerRepositoryInterface
      */
     private $customerRepository;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     * @var TimezoneInterface
      */
     private $timezone;
 
     /**
-     * @var \Magento\Store\Model\App\Emulation
+     * @var Emulation
      */
     private $emulation;
 
     /**
      * Wishlist constructor.
      *
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Magento\Wishlist\Model\ResourceModel\Wishlist\CollectionFactory $wishlistCollectionFactory
-     * @param \Mailjet\Mailjet\Model\Api\Email $apiEmail
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
-     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
-     * @param \Magento\Store\Model\App\Emulation $emulation
+     * @param StoreManagerInterface $storeManager
+     * @param Data $dataHelper
+     * @param CollectionFactory $wishlistCollectionFactory
+     * @param Email $apiEmail
+     * @param CustomerRepositoryInterface $customerRepository
+     * @param TimezoneInterface $timezone
+     * @param Emulation $emulation
      */
     public function __construct(
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Wishlist\Model\ResourceModel\Wishlist\CollectionFactory $wishlistCollectionFactory,
-        \Mailjet\Mailjet\Model\Api\Email $apiEmail,
-        \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone,
-        \Magento\Store\Model\App\Emulation $emulation
+        StoreManagerInterface       $storeManager,
+        Data                        $dataHelper,
+        CollectionFactory           $wishlistCollectionFactory,
+        Email                       $apiEmail,
+        CustomerRepositoryInterface $customerRepository,
+        TimezoneInterface           $timezone,
+        Emulation                   $emulation
     ) {
-        $this->storeManager              = $storeManager;
-        $this->dataHelper                = $dataHelper;
+        $this->storeManager = $storeManager;
+        $this->dataHelper = $dataHelper;
         $this->wishlistCollectionFactory = $wishlistCollectionFactory;
-        $this->apiEmail                  = $apiEmail;
-        $this->customerRepository        = $customerRepository;
-        $this->timezone                  = $timezone;
-        $this->emulation                 = $emulation;
+        $this->apiEmail = $apiEmail;
+        $this->customerRepository = $customerRepository;
+        $this->timezone = $timezone;
+        $this->emulation = $emulation;
     }
 
+    /**
+     * Execute
+     *
+     * @return void
+     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function execute()
     {
         foreach ($this->storeManager->getWebsites() as $website) {
             $storeId = $website->getDefaultStore()->getId();
 
-            if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_WISHLIST_REMINDER_STATUS, $storeId)
-                && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_WISHLIST_REMINDER_TEMPLATE_ID, $storeId)
+            if ($this->dataHelper->getConfigValue(
+                Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_WISHLIST_REMINDER_STATUS,
+                $storeId
+            )
+                && $this->dataHelper->getConfigValue(
+                    Data::CONFIG_PATH_WISHLIST_NOTIFICATIONS_WISHLIST_REMINDER_TEMPLATE_ID,
+                    $storeId
+                )
             ) {
                 $this->emulation->startEnvironmentEmulation($storeId);
 
-                $fromTime = $this->timezone->date(null, null, false)->modify('-1 week')->modify('-5 minute')->format('Y-m-d H:i:s');
-                $toTime = $this->timezone->date(null, null, false)->modify('-1 week')->format('Y-m-d H:i:s');
+                $fromTime = $this->timezone->date(null, null, false)
+                    ->modify('-1 week')->modify('-5 minute')->format('Y-m-d H:i:s');
+                $toTime = $this->timezone->date(null, null, false)
+                    ->modify('-1 week')->format('Y-m-d H:i:s');
 
                 $wishlists = $this->wishlistCollectionFactory->create()
                     ->addFieldToFilter('updated_at', ['gteq' => $fromTime])

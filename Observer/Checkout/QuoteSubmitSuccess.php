@@ -2,7 +2,12 @@
 
 namespace Mailjet\Mailjet\Observer\Checkout;
 
-class QuoteSubmitSuccess implements \Magento\Framework\Event\ObserverInterface
+use Magento\Framework\Event\Observer;
+use Magento\Framework\Event\ObserverInterface;
+use Magento\Newsletter\Model\SubscriberFactory;
+use Mailjet\Mailjet\Helper\Data;
+
+class QuoteSubmitSuccess implements ObserverInterface
 {
     /**
      * @var \Mailjet\Mailjet\Helper\Data
@@ -17,12 +22,12 @@ class QuoteSubmitSuccess implements \Magento\Framework\Event\ObserverInterface
     /**
      * Quote Submit Success constructor.
      *
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
+     * @param \Mailjet\Mailjet\Helper\Data                $dataHelper
      * @param \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
+        Data $dataHelper,
+        SubscriberFactory $subscriberFactory
     ) {
         $this->dataHelper           = $dataHelper;
         $this->subscriberFactory    = $subscriberFactory;
@@ -31,12 +36,12 @@ class QuoteSubmitSuccess implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
-    public function execute(\Magento\Framework\Event\Observer $observer)
+    public function execute(Observer $observer)
     {
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
+        if ($this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
             /**
              * @var $subscriber \Magento\Quote\Model\Quote
              */

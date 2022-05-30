@@ -4,6 +4,11 @@ namespace Mailjet\Mailjet\Model\System\Config\Source;
 
 class Ssl implements \Magento\Framework\Option\ArrayInterface
 {
+    /**
+     * To option array
+     *
+     * @return array
+     */
     public function toOptionArray()
     {
         $ssl = [];

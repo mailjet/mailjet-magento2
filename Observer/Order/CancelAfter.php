@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Observer\Order;
 
+use Mailjet\Mailjet\Helper\Data;
+
 class CancelAfter implements \Magento\Framework\Event\ObserverInterface
 {
     /**
@@ -17,11 +19,11 @@ class CancelAfter implements \Magento\Framework\Event\ObserverInterface
     /**
      * Order Cancel After constructor.
      *
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
+     * @param \Mailjet\Mailjet\Helper\Data     $dataHelper
      * @param \Mailjet\Mailjet\Model\Api\Email $apiEmail
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
+        Data $dataHelper,
         \Mailjet\Mailjet\Model\Api\Email $apiEmail
     ) {
         $this->dataHelper = $dataHelper;
@@ -31,7 +33,7 @@ class CancelAfter implements \Magento\Framework\Event\ObserverInterface
     /**
      * Execute observer
      *
-     * @param \Magento\Framework\Event\Observer $observer
+     * @param  \Magento\Framework\Event\Observer $observer
      * @return Void
      */
     public function execute(\Magento\Framework\Event\Observer $observer)
@@ -42,8 +44,10 @@ class CancelAfter implements \Magento\Framework\Event\ObserverInterface
         $order = $observer->getOrder();
         $storeId = $order->getStore()->getId();
 
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CANCELLATION_TEMPLATE_ID, $storeId)
-            && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CANCELLATION_STATUS, $storeId)
+        if ($this->dataHelper
+                ->getConfigValue(Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CANCELLATION_TEMPLATE_ID, $storeId)
+            && $this->dataHelper
+                ->getConfigValue(Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CANCELLATION_STATUS, $storeId)
         ) {
             $this->apiEmail->cancelOrder($order, $storeId);
         }

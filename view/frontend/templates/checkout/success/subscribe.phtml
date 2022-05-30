@@ -1,8 +1,12 @@
+<?php /* @var  $escaper \Magento\Framework\Escaper */
+/* @var  $block \Mailjet\Mailjet\Block\Checkout\Success\Subscribe */
+?>
+<?php //phpcs:disable ?>
 <div id="newsletter-subscription">
     <br>
     <div>
-        <p><?= $block->getBannerText(); ?></p>
-        <span id="subscribe-button" class="action primary"><?= $block->getButtonText(); ?></span>
+        <p><?= $block->escapeHtml($block->getBannerText()); ?></p>
+        <span id="subscribe-button" class="action primary"><?= $block->escapeHtml($block->getButtonText()); ?></span>
     </div>
 </div>
 <script type="text/javascript">//<![CDATA[
@@ -14,9 +18,9 @@
             jQuery('#newsletter-subscription').trigger('processStart');
 
             jQuery.ajax({
-                url: '<?= $block->getUrl('mailjet/checkout_success/subscribe'); ?>',
+                url: '<?= $escaper->escapeUrl($block->getUrl('mailjet/checkout_success/subscribe')); ?>',
                 data: {
-                    email: '<?= $block->getEmail(); ?>',
+                    email: '<?= $escaper->escapeUrl($block->getEmail()); ?>',
                 },
                 type: 'POST',
                 success: function(data) {
@@ -32,3 +36,4 @@
         });
     });
 //]]></script>
+<?php //phpcs:enable ?>
