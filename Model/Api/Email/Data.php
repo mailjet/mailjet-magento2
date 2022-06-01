@@ -125,7 +125,7 @@ class Data extends \Magento\Framework\DataObject
         \Magento\Sales\Block\Order\TotalsFactory                      $blockTotalsFactory,
         \Magento\Sales\Model\Order\Pdf\Total\Factory                  $pdfTotalFactory,
         \Magento\Sales\Model\Order\Pdf\Config                         $pdfConfig,
-        Currency                             $currency,
+        Currency                                                      $currency,
         \Magento\Sales\Block\DataProviders\Email\Shipment\TrackingUrl $trackingUrl,
         \Magento\Catalog\Api\ProductRepositoryInterface               $productRepository,
         Configurable                                                  $configurableProductResourceModel
@@ -160,7 +160,10 @@ class Data extends \Magento\Framework\DataObject
         $data = [
             'store_name' => $store->getName(),
             'store_code' => $store->getCode(),
-            'store_base_url' => $this->dataHelper->getConfigValue(Store::XML_PATH_SECURE_BASE_URL, $store->getId()),
+            'store_base_url' => $this->dataHelper->getConfigValue(
+                Store::XML_PATH_SECURE_BASE_URL,
+                $store->getId()
+            ),
             'store_sales_email' => $this->dataHelper->getConfigValue(
                 'trans_email/ident_' . $this->orderIdentity->getEmailIdentity() . '/email',
                 $store->getId()
@@ -191,7 +194,7 @@ class Data extends \Magento\Framework\DataObject
     public function setOrder($order)
     {
         $orderShipping = $order->getIsVirtual() ?
-                         '' : $this->addressRenderer->format($order->getShippingAddress(), 'html');
+            '' : $this->addressRenderer->format($order->getShippingAddress(), 'html');
         $orderBilling = $this->addressRenderer->format($order->getBillingAddress(), 'html');
         $orderPayment = $this->paymentHelper->getInfoBlockHtml($order->getPayment(), $order->getStoreId());
 
@@ -229,7 +232,7 @@ class Data extends \Magento\Framework\DataObject
         $data = [
             'shipment_id' => $shipment->getIncrementId(),
             'shipment_customer_note_notify' => $shipment->getCustomerNoteNotify() ?
-                                               $shipment->getCustomerNoteNotify() : '',
+                $shipment->getCustomerNoteNotify() : '',
             'shipment_customer_note' => (int)$shipment->getCustomerNote(),
         ];
 
@@ -281,7 +284,7 @@ class Data extends \Magento\Framework\DataObject
         }
 
         $this->addData(['shipment_trackings' => $shipmentTrackings,
-                        'has_shipment_trackings' => (bool)$shipmentTrackings]);
+            'has_shipment_trackings' => (bool)$shipmentTrackings]);
         return $this;
     }
 
@@ -342,13 +345,15 @@ class Data extends \Magento\Framework\DataObject
                 $productData = $this->getProductImages($item->getProduct());
             } else {
                 $product = $this->productRepository->getById($item->getProductId());
-                $productData = $this->getProductImages($product);
+                if ($product->getId()) {
+                    $productData = $this->getProductImages($product);
+                }
             }
 // phpcs:disable Generic.Files.LineLength.TooLong
             $productOptions = $item->getProductOptions();
 
             $productData['product_options'] = !empty($productOptions['attributes_info']) ?
-                                              $productOptions['attributes_info'] : []; // all
+                $productOptions['attributes_info'] : []; // all
             $productData['sku'] = $item->getSku(); // all
             $productData['name'] = $item->getName(); // all
             $productData['qty_ordered'] = (int)$item->getQtyOrdered(); // Magento\Sales\Model\Order\Item
@@ -386,26 +391,28 @@ class Data extends \Magento\Framework\DataObject
 
         foreach ($productsIds as $productsId) {
             $product = $this->productRepository->getById($productsId);
-            $price = $this->currency->convert($product->getPrice(), $currency);
-            $specialPrice = $this->currency->convert($product->getSpecialPrice(), $currency);
-            $discountPercent = $price ? round(100 - ((100 / $price) * $specialPrice)) : 0;
+            if ($product->getId()) {
+                $price = $this->currency->convert($product->getPrice(), $currency);
+                $specialPrice = $this->currency->convert($product->getSpecialPrice(), $currency);
+                $discountPercent = $price ? round(100 - ((100 / $price) * $specialPrice)) : 0;
 
-            if ($maxDiscount < $discountPercent) {
-                $maxDiscount = $discountPercent;
+                if ($maxDiscount < $discountPercent) {
+                    $maxDiscount = $discountPercent;
+                }
+
+                $productData = $this->getProductImages($product);
+                $productData['store_id'] = $product->getStoreId();
+                $productData['product_type'] = $product->getTypeId();
+                $productData['is_virtual'] = $product->getIsVirtual();
+                $productData['special_price'] = $this->formatPrice($specialPrice, $currencySymbol);
+                $productData['discount_percent'] = $discountPercent;
+                $productData['sku'] = $product->getSku();
+                $productData['name'] = $product->getName();
+                $productData['price'] = $this->formatPrice($price, $currencySymbol);
+                $productData['url'] = $this->getProductUrl($product);
+
+                $productInfo[] = $productData;
             }
-
-            $productData = $this->getProductImages($product);
-            $productData['store_id'] = $product->getStoreId();
-            $productData['product_type'] = $product->getTypeId();
-            $productData['is_virtual'] = $product->getIsVirtual();
-            $productData['special_price'] = $this->formatPrice($specialPrice, $currencySymbol);
-            $productData['discount_percent'] = $discountPercent;
-            $productData['sku'] = $product->getSku();
-            $productData['name'] = $product->getName();
-            $productData['price'] = $this->formatPrice($price, $currencySymbol);
-            $productData['url'] = $this->getProductUrl($product);
-
-            $productInfo[] = $productData;
         }
 
         $data = [
@@ -468,7 +475,7 @@ class Data extends \Magento\Framework\DataObject
     /**
      *  Get product images
      *
-     * @param \Magento\Catalog\Model\Product $product
+     * @param \Magento\Catalog\Model\Product|\Magento\Catalog\Api\Data\ProductInterface $product
      * @return array
      */
     private function getProductImages($product)
@@ -477,8 +484,7 @@ class Data extends \Magento\Framework\DataObject
             'swatch_image' => $this->getProductImage($product, 'product_swatch_image'),
             'thumbnail_image' => $this->getProductImage($product, 'product_thumbnail_image'),
             'base_image' => $this->getProductImage($product, 'product_base_image'),
-            'small_image' => $this->getProductImage($product, 'product_small_image'),
-            'swatch_image' => $this->getProductImage($product, 'product_swatch_image'),
+            'small_image' => $this->getProductImage($product, 'product_small_image')
         ];
     }
 
@@ -508,7 +514,11 @@ class Data extends \Magento\Framework\DataObject
     private function formatPrice($price, $currency)
     {
         if (isset($price)) {
-            return $this->currency->format($price, ['currency' => $currency, 'precision' => 2], false, false);
+            return $this->currency->format(
+                $price,
+                ['currency' => $currency, 'precision' => 2],
+                false,
+            );
         }
     }
 
@@ -521,17 +531,22 @@ class Data extends \Magento\Framework\DataObject
      * @param int $height
      * @return string
      */
-    private function getProductImage($product, $type, int $width = 400, int $height = 400)
+    private function getProductImage($product, $type, int $width = 400, int $height = 400): string
     {
         try {
-            $url = $this->imageHelperFactory->create()->init(
-                $product,
-                $type,
-                ['width' => $width, 'height' => $height, 'keep_aspect_ratio' => true]
-            );
-            $url->getResizedImageInfo();
+            $url = '';
+            $image = $product->getImage();
 
-            return $url->getUrl();
+            if ($image && $image != 'no_selection') {
+                $imageHelper = $this->imageHelperFactory->create()->init(
+                    $product,
+                    $type,
+                    ['width' => $width, 'height' => $height, 'keep_aspect_ratio' => true]
+                )->setImageFile($image);
+                $imageHelper->getResizedImageInfo();
+                $url = $imageHelper->getUrl();
+            }
+            return $url;
         } catch (\Magento\Catalog\Model\Product\Image\NotLoadInfoImageException $e) {
             return '';
         }
