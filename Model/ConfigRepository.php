@@ -268,7 +268,7 @@ class ConfigRepository implements \Mailjet\Mailjet\Api\ConfigRepositoryInterface
     /**
      * Generate Configs
      *
-     * @param  \Magento\Store\Api\Data\StoreInterface[]|Array|null $stores
+     * @param  \Magento\Store\Api\Data\StoreInterface[]|array|null $stores
      * @return Void
      */
     public function generateConfigs($stores = null)

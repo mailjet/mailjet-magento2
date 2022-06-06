@@ -357,7 +357,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function subscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null)
+    public function subscribe($subscriber, ConfigInterface $config = null)
     {
         $this->_subscriberSave($subscriber, $config, DataInterface::ACTIONS['SUB']);
     }
@@ -373,7 +373,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      * @throws \Magento\Framework\Exception\LocalizedException
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
-    public function unsubscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null)
+    public function unsubscribe($subscriber, ConfigInterface $config = null)
     {
         $this->_subscriberSave($subscriber, $config, DataInterface::ACTIONS['UNS']);
     }
@@ -387,7 +387,7 @@ class SubscriberQueueRepository implements \Mailjet\Mailjet\Api\SubscriberQueueR
      * @throws \Magento\Framework\Exception\CouldNotDeleteException
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      */
-    public function deleteSubscription(Subscriber|CustomerInterface $customer, ConfigInterface $config = null)
+    public function deleteSubscription($customer, ConfigInterface $config = null)
     {
         if ($customer instanceof CustomerInterface) {
             $email = $customer->getEmail();

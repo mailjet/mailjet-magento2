@@ -116,7 +116,7 @@ interface SubscriberQueueRepositoryInterface
      * @param ConfigInterface|null $config
      * @return void
      */
-    public function subscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null);
+    public function subscribe($subscriber, ConfigInterface $config = null);
 
     /**
      * Set customer to be unsubscribed to Mailjet
@@ -125,7 +125,7 @@ interface SubscriberQueueRepositoryInterface
      * @param ConfigInterface|null $config
      * @return void
      */
-    public function unsubscribe(Subscriber|CustomerInterface $subscriber, ConfigInterface $config = null);
+    public function unsubscribe($subscriber, ConfigInterface $config = null);
 
     /**
      * Set customer to be deleted from Mailjet
@@ -134,5 +134,5 @@ interface SubscriberQueueRepositoryInterface
      * @param ConfigInterface|null $config
      * @return void
      */
-    public function deleteSubscription(Subscriber|CustomerInterface $customer, ConfigInterface $config = null);
+    public function deleteSubscription($customer, ConfigInterface $config = null);
 }
