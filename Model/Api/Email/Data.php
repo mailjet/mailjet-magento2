@@ -115,7 +115,7 @@ class Data extends \Magento\Framework\DataObject
         \Magento\Sales\Model\Order\Pdf\Total\Factory $pdfTotalFactory,
         \Magento\Sales\Model\Order\Pdf\Config $pdfConfig,
         \Magento\Directory\Model\Currency $currency,
-        \Magento\Sales\Block\DataProviders\Email\Shipment\TrackingUrl $trackingUrl,
+        \Mailjet\Mailjet\Sales\Block\DataProviders\Email\Shipment\TrackingUrl $trackingUrl,
         \Magento\Catalog\Api\ProductRepositoryInterface $productRepository,
         \Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable $configurableProductResourceModel
     ) {
