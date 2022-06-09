@@ -311,7 +311,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
                         $error = $this->errorFactory->create();
                         $error->setApiResult(json_encode($connection->getResponce()->getBody()));
                         $error->setStatus($connection->getResponce()->getStatus());
-                        $errors[] = $this->errorRepository->save($error);
+                        $errors[] = $this->errorRepository->save($error)->getId();
                     }
                 }
             } elseif ($job->getAction() == SubscriberQueue::ACTIONS['STK']) {
