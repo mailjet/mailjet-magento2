@@ -50,6 +50,7 @@
                 <field id="mailjet_list" type="select" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mailjet List</label>
                     <source_model>Mailjet\Mailjet\Model\System\Config\Source\MailjetList</source_model>
+                    <backend_model>Mailjet\Mailjet\Model\System\Config\Backend\MailjetList</backend_model>
                     <validate>mailjet-mailjet-list</validate>
                     <depends>
                         <field id="active">1</field>

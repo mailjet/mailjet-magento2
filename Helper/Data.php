@@ -293,7 +293,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Get config value
      *
      * @param string $path
-     * @param string $storeId
+     * @param string|null $storeId
      * @param null|int|string $scope
      * @return mixed
      */
