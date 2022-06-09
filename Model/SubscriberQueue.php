@@ -2,8 +2,16 @@
 
 namespace Mailjet\Mailjet\Model;
 
-class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
+use Magento\Framework\Model\AbstractModel;
+use Mailjet\Mailjet\Api\Data\SubscriberQueueInterface;
+
+class SubscriberQueue extends AbstractModel implements SubscriberQueueInterface
 {
+    /**
+     * SubscriberQueue construct
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init(\Mailjet\Mailjet\Model\ResourceModel\SubscriberQueue::class);
@@ -92,7 +100,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setId($id)
@@ -103,7 +111,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set subscriber id
      *
-     * @param Int $subscriberId
+     * @param  Int $subscriberId
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setSubscriberId($subscriberId)
@@ -114,7 +122,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set property
      *
-     * @param array $property
+     * @param  array $property
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setProperty($property)
@@ -125,7 +133,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set email
      *
-     * @param String $email
+     * @param  String $email
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setEmail($email)
@@ -136,7 +144,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set name
      *
-     * @param String $name
+     * @param  String $name
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setName($name)
@@ -147,7 +155,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set action
      *
-     * @param String $action
+     * @param  String $action
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setAction($action)
@@ -158,7 +166,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set config id
      *
-     * @param String $configId
+     * @param  String $configId
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setConfigId($configId)
@@ -169,7 +177,7 @@ class SubscriberQueue extends \Magento\Framework\Model\AbstractModel implements 
     /**
      * Set job id
      *
-     * @param String $jobId
+     * @param  String $jobId
      * @return \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface
      */
     public function setJobId($jobId)

@@ -2,6 +2,9 @@
 
 namespace Mailjet\Mailjet\Controller\Adminhtml\System\Config;
 
+use Magento\Store\Model\ScopeInterface;
+use Mailjet\Mailjet\Helper\Data;
+
 class Resync extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\AbstractAction
 {
     /**
@@ -35,22 +38,22 @@ class Resync extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
     protected $storeManager;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
-     * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
+     * @param \Magento\Backend\App\Action\Context                                  $context
+     * @param \Magento\Framework\Controller\Result\JsonFactory                     $resultJsonFactory
+     * @param \Mailjet\Mailjet\Model\Api\Connection                                $apiConnection
+     * @param \Mailjet\Mailjet\Helper\Data                                         $dataHelper
+     * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface              $subscriberQueueRepository
      * @param \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory $subscriberCollectionFactory
-     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterfaceFactory $configFactory
-     * @param \Mailjet\Mailjet\Model\JobRepository $jobRepository
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface                       $configRepository
+     * @param \Mailjet\Mailjet\Api\Data\ConfigInterfaceFactory                     $configFactory
+     * @param \Mailjet\Mailjet\Model\JobRepository                                 $jobRepository
+     * @param \Magento\Store\Model\StoreManagerInterface                           $storeManager
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,
         \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory,
         \Mailjet\Mailjet\Model\Api\Connection $apiConnection,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
+        Data $dataHelper,
         \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository,
         \Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory $subscriberCollectionFactory,
         \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository,
@@ -77,6 +80,7 @@ class Resync extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
      * Execute view action
      *
      * @return \Magento\Framework\Controller\ResultInterface
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function execute()
     {
@@ -98,9 +102,13 @@ class Resync extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
                 $secretKey = $this->apiConnection->getEncryptor()->encrypt($this->getRequest()->getParam('secret_key'));
             } else {
                 if ($this->getRequest()->getParam('website_id')) {
-                    $secretKey = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY, $this->getRequest()->getParam('website_id'), \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES);
+                    $secretKey = $this->dataHelper->getConfigValue(
+                        Data::CONFIG_PATH_ACCOUNT_SECRET_KEY,
+                        $this->getRequest()->getParam('website_id'),
+                        ScopeInterface::SCOPE_WEBSITES
+                    );
                 } else {
-                    $secretKey = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ACCOUNT_SECRET_KEY);
+                    $secretKey = $this->dataHelper->getConfigValue(Data::CONFIG_PATH_ACCOUNT_SECRET_KEY);
                 }
             }
 
@@ -139,6 +147,8 @@ class Resync extends \Mailjet\Mailjet\Controller\Adminhtml\System\Config\Abstrac
     }
 
     /**
+     * Determines whether current user is allowed to access Action
+     *
      * @return bool
      */
     protected function _isAllowed()

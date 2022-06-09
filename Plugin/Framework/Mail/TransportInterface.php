@@ -21,8 +21,8 @@ class Transport
 
     /**
      * @param \Mailjet\Mailjet\Model\Framework\Mail\TransportFactory $transportFactory
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Mailjet\Mailjet\Helper\Data                           $dataHelper
+     * @param \Magento\Store\Model\StoreManagerInterface             $storeManager
      */
     public function __construct(
         \Mailjet\Mailjet\Model\Framework\Mail\TransportFactory $transportFactory,
@@ -38,7 +38,7 @@ class Transport
      * Around Send Message.
      *
      * @param \Magento\Framework\Mail\TransportInterface $subject
-     * @param callable $proceed
+     * @param callable                                   $proceed
      */
     public function aroundSendMessage(\Magento\Framework\Mail\TransportInterface $subject, callable $proceed)
     {

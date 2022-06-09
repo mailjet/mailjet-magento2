@@ -2,16 +2,53 @@
 
 namespace Mailjet\Mailjet\Helper\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 
 trait Webhook
 {
+    /**
+     * Get Response
+     *
+     * @return mixed
+     */
     abstract public function getResponce();
+
+    /**
+     * Get error
+     *
+     * @return mixed
+     */
     abstract public function getError();
+
+    /**
+     * Set response
+     *
+     * @param array $responce
+     * @return mixed
+     */
     abstract protected function setResponce($responce);
+
+    /**
+     * Set error
+     *
+     * @param array $error
+     * @return mixed
+     */
     abstract protected function setError($error);
+
+    /**
+     * Get client
+     *
+     * @return mixed
+     */
     abstract protected function getClient();
 
+    /**
+     * Create webhook
+     *
+     * @param array $data
+     * @return array
+     */
     public function createWebhook($data)
     {
         $body = [
@@ -23,7 +60,8 @@ trait Webhook
             ]
         ];
 
-        $this->setResponce($this->getClient()->post(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->post(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -32,13 +70,20 @@ trait Webhook
         }
     }
 
+    /**
+     * Delete webhook
+     *
+     * @param string|int $webhookId
+     * @return array
+     */
     public function deleteWebhook($webhookId)
     {
         $body = [
             MailjetAPI::ID => $webhookId
         ];
 
-        $this->setResponce($this->getClient()->delete(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->delete(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -47,6 +92,12 @@ trait Webhook
         }
     }
 
+    /**
+     * Update webhook
+     *
+     * @param array $data
+     * @return array
+     */
     public function updateWebhook($data)
     {
         $body = [
@@ -58,7 +109,8 @@ trait Webhook
             ]
         ];
 
-        $this->setResponce($this->getClient()->put(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->put(\Mailjet\Resources::$Eventcallbackurl, $body, ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();
@@ -67,9 +119,15 @@ trait Webhook
         }
     }
 
+    /**
+     * Get webhooks
+     *
+     * @return array
+     */
     public function getWebhooks()
     {
-        $this->setResponce($this->getClient()->get(\Mailjet\Resources::$Eventcallbackurl, [], ['version' => 'v3']));
+        $this->setResponce($this->getClient()
+            ->get(\Mailjet\Resources::$Eventcallbackurl, [], ['version' => 'v3']));
 
         if ($this->getResponce()->success()) {
             return $this->getResponce()->getData();

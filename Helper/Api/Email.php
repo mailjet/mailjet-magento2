@@ -2,17 +2,65 @@
 
 namespace Mailjet\Mailjet\Helper\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 
 trait Email
 {
+    /**
+     * Get Api Key
+     *
+     * @return mixed
+     */
     abstract public function getApiKey();
+
+    /**
+     * Get Response
+     *
+     * @return mixed
+     */
     abstract public function getResponce();
+
+    /**
+     * Get Error
+     *
+     * @return mixed
+     */
     abstract public function getError();
+
+    /**
+     * Set responce
+     *
+     * @param array $responce
+     * @return mixed
+     */
     abstract protected function setResponce($responce);
+
+    /**
+     * Set error
+     *
+     * @param array $error
+     * @return mixed
+     */
     abstract protected function setError($error);
+
+    /**
+     * Get client
+     *
+     * @return mixed
+     */
     abstract protected function getClient();
 
+    /**
+     * Send email V3
+     *
+     * @param array $data
+     * @param array|null $recipients
+     * @param int|string $templateId
+     * @param array $vars
+     * @param array $files
+     * @param array $inline_attachments
+     * @return array
+     */
     public function sendEmailV3($data, $recipients, $templateId, $vars, $files = [], $inline_attachments = [])
     {
         $body = [
@@ -33,7 +81,7 @@ trait Email
                 // MailjetAPI::MJ_CUSTOMID => 0,
                 // MailjetAPI::MJ_EVENT_PAYLOAD => '',
                 // MailjetAPI::MJ_MONITORING_CATEGORY => '',
-                MailjetAPI::HEADERS => json_encode(['Content-Type' => 'application/json']),//$data['header'],
+                MailjetAPI::HEADERS => json_encode(['Content-Type' => 'application/json']),
                 MailjetAPI::VARS => json_encode($vars),
                 ]
             ]
@@ -53,19 +101,23 @@ trait Email
         }
 
         foreach ($files as $file) {
-            $body[MailjetAPI::BODY]['Messages'][MailjetAPI::ATTACHMENTS][] = json_encode([
+            $body[MailjetAPI::BODY]['Messages'][MailjetAPI::ATTACHMENTS][] = json_encode(
+                [
                 MailjetAPI::FILENAME      => $file['filename'],
                 MailjetAPI::CONTENT_TYPE  => $file['content_type'], // application/pdf
                 MailjetAPI::CONTENT       => $file['content'],
-            ]);
+                ]
+            );
         }
 
         foreach ($inline_attachments as $inline_attachment) {
-            $body[MailjetAPI::BODY]['Messages'][MailjetAPI::INLINE_ATTACHMENTS][] = json_encode([
+            $body[MailjetAPI::BODY]['Messages'][MailjetAPI::INLINE_ATTACHMENTS][] = json_encode(
+                [
                 MailjetAPI::FILENAME      => $inline_attachment['filename'],
                 MailjetAPI::CONTENT_TYPE  => $inline_attachment['content_type'], // application/pdf
                 MailjetAPI::CONTENT       => $inline_attachment['content'],
-            ]);
+                ]
+            );
         }
 
         $this->setResponce($this->getClient()->post(\Mailjet\Resources::$Email, $body, ['version' => 'v3']));
@@ -77,6 +129,12 @@ trait Email
         }
     }
 
+    /**
+     * Send email V31
+     *
+     * @param array $data
+     * @return array
+     */
     public function sendEmailV31($data)
     {
         $body = [
@@ -115,25 +173,37 @@ trait Email
             ];
 
             if (!empty($message['reply_to'])) {
-                $newMessage[MailjetAPI::REPLY_TO] = json_decode(json_encode([
-                    MailjetAPI::EMAIL => $message['reply_to']['email'],
-                    MailjetAPI::NAME  => $message['reply_to']['name']
-                ]));
+                $newMessage[MailjetAPI::REPLY_TO] = json_decode(
+                    json_encode(
+                        [
+                        MailjetAPI::EMAIL => $message['reply_to']['email'],
+                        MailjetAPI::NAME  => $message['reply_to']['name']
+                        ]
+                    )
+                );
             }
 
             if (!empty($message['error_receiver'])) {
                 $newMessage[MailjetAPI::TEMPLATE_LANGUAGE] = true;
-                $newMessage[MailjetAPI::TEMPLATE_ERROR_REPORTING] = json_decode(json_encode([
-                    MailjetAPI::EMAIL => $message['error_receiver']['email'],
-                    MailjetAPI::NAME  => $message['error_receiver']['name']
-                ]));
+                $newMessage[MailjetAPI::TEMPLATE_ERROR_REPORTING] = json_decode(
+                    json_encode(
+                        [
+                        MailjetAPI::EMAIL => $message['error_receiver']['email'],
+                        MailjetAPI::NAME  => $message['error_receiver']['name']
+                        ]
+                    )
+                );
             }
 
             if (!empty($message['sender'])) {
-                $newMessage[MailjetAPI::SENDER] = json_decode(json_encode([
-                    MailjetAPI::EMAIL => $message['sender']['email'],
-                    MailjetAPI::NAME  => $message['sender']['name']
-                ]));
+                $newMessage[MailjetAPI::SENDER] = json_decode(
+                    json_encode(
+                        [
+                        MailjetAPI::EMAIL => $message['sender']['email'],
+                        MailjetAPI::NAME  => $message['sender']['name']
+                        ]
+                    )
+                );
             }
 
             if (!empty($message['to'])) {
@@ -147,39 +217,55 @@ trait Email
 
             if (!empty($message['cc'])) {
                 foreach ($message['cc'] as $ccReceiver) {
-                    $newMessage[MailjetAPI::CC][] = json_decode(json_encode([
-                        MailjetAPI::EMAIL => $ccReceiver['email'],
-                        MailjetAPI::NAME  => $ccReceiver['name']
-                    ]));
+                    $newMessage[MailjetAPI::CC][] = json_decode(
+                        json_encode(
+                            [
+                            MailjetAPI::EMAIL => $ccReceiver['email'],
+                            MailjetAPI::NAME  => $ccReceiver['name']
+                            ]
+                        )
+                    );
                 }
             }
 
             if (!empty($message['bcc'])) {
                 foreach ($message['bcc'] as $bccReceiver) {
-                    $newMessage[MailjetAPI::BCC][] = json_decode(json_encode([
-                        MailjetAPI::EMAIL => $bccReceiver['email'],
-                        MailjetAPI::NAME  => $bccReceiver['name']
-                    ]));
+                    $newMessage[MailjetAPI::BCC][] = json_decode(
+                        json_encode(
+                            [
+                            MailjetAPI::EMAIL => $bccReceiver['email'],
+                            MailjetAPI::NAME  => $bccReceiver['name']
+                            ]
+                        )
+                    );
                 }
             }
 
             if (!empty($message['files'])) {
                 foreach ($message['files'] as $file) {
-                    $newMessage[MailjetAPI::ATTACHMENTS][] = json_decode(json_encode([
-                        MailjetAPI::FILENAME         => $file['filename'],
-                        MailjetAPI::CONTENT_TYPE     => $file['content_type'],
-                        MailjetAPI::BASE_64_CONTENT  => $file['base_64_content']
-                    ]));
+                    $newMessage[MailjetAPI::ATTACHMENTS][] = json_decode(
+                        json_encode(
+                            [
+                            MailjetAPI::FILENAME         => $file['filename'],
+                            MailjetAPI::CONTENT_TYPE     => $file['content_type'],
+                            MailjetAPI::BASE_64_CONTENT  => $file['base_64_content']
+                            ]
+                        )
+                    );
                 }
             }
 
             if (!empty($message['inline_attachments'])) {
                 foreach ($message['inline_attachments'] as $inline_attachment) {
-                    $newMessage[MailjetAPI::ATTACHMENTS][] = json_decode(json_encode([
-                        MailjetAPI::FILENAME         => $inline_attachment['filename'],
-                        MailjetAPI::CONTENT_TYPE     => $inline_attachment['content_type'],
-                        MailjetAPI::BASE_64_CONTENT  => $inline_attachment['base_64_content']
-                    ]));
+                    $newMessage[MailjetAPI::ATTACHMENTS][] = json_decode(
+                        json_encode(
+                            [
+                            MailjetAPI::FILENAME         => $inline_attachment['filename'],
+                            MailjetAPI::CONTENT_TYPE     => $inline_attachment['content_type'],
+                            MailjetAPI::BASE_64_CONTENT  => $inline_attachment['base_64_content']
+                            ]
+                        )
+                    );
                 }
             }
 

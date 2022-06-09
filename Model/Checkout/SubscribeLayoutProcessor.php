@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Model\Checkout;
 
+use Mailjet\Mailjet\Helper\Data;
+
 class SubscribeLayoutProcessor
 {
     /**
@@ -15,17 +17,22 @@ class SubscribeLayoutProcessor
      * @param \Mailjet\Mailjet\Helper\Data $dataHelper
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper
+        Data $dataHelper
     ) {
-        $this->dataHelper           = $dataHelper;
+        $this->dataHelper = $dataHelper;
     }
 
     /**
-     * {@inheritdoc}
+     * Process
+     *
+     * @param array $layout
+     * @return array
      */
     public function process($layout)
     {
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
+        if ($this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_PAGE_SUBSCRIBE)) {
+            $checkoutLabel = $this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_CHECKBOX_TEXT);
+            $templateMame = 'Mailjet_Mailjet/form/element/newsletter-subscribe';
             $layoutSubscribe = [
                 'components' => [
                     'checkout' => [
@@ -43,8 +50,8 @@ class SubscribeLayoutProcessor
                                                         'children' => [
                                                             'newsletter-subscribe' => [
                                                                 'config' => [
-                                                                    'checkoutLabel' => $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_CHECKBOX_TEXT),
-                                                                    'template' => 'Mailjet_Mailjet/form/element/newsletter-subscribe'
+                                                                    'checkoutLabel' => $checkoutLabel,
+                                                                    'template' => $templateMame
                                                                 ],
                                                                 'component' => 'Magento_Ui/js/form/form',
                                                                 'displayArea' => 'newsletter-subscribe',
@@ -66,8 +73,8 @@ class SubscribeLayoutProcessor
                                                         'children' => [
                                                             'newsletter-subscribe' => [
                                                                 'config' => [
-                                                                    'checkoutLabel' => $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_CHECKOUT_CHECKBOX_TEXT),
-                                                                    'template' => 'Mailjet_Mailjet/form/element/newsletter-subscribe'
+                                                                    'checkoutLabel' => $checkoutLabel,
+                                                                    'template' => $templateMame
                                                                 ],
                                                                 'component' => 'Magento_Ui/js/form/form',
                                                                 'displayArea' => 'newsletter-subscribe',

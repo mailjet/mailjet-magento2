@@ -2,6 +2,12 @@
 
 namespace Mailjet\Mailjet\Block\Checkout\Success;
 
+use Magento\Customer\Model\Session;
+use Magento\Framework\View\Element\Template\Context;
+use Magento\Newsletter\Model\SubscriberFactory;
+use Mailjet\Mailjet\Helper\Data;
+use \Magento\Checkout\Model\Session as CheckoutSession;
+
 class Subscribe extends \Magento\Framework\View\Element\Template
 {
     /**
@@ -10,34 +16,34 @@ class Subscribe extends \Magento\Framework\View\Element\Template
     protected $checkoutSession;
 
     /**
-     * @var \Magento\Customer\Model\Session
+     * @var Session
      */
     protected $customerSession;
 
     /**
-     * @var \Magento\Newsletter\Model\SubscriberFactory
+     * @var SubscriberFactory
      */
     protected $subscriberFactory;
 
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var Data
      */
     protected $dataHelper;
 
     /**
-     * @param \Magento\Framework\View\Element\Template\Context $context
-     * @param \Magento\Checkout\Model\Session $checkoutSession
-     * @param \Magento\Customer\Model\Session $customerSession
-     * @param \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
+     * @param Context $context
+     * @param CheckoutSession $checkoutSession
+     * @param Session $customerSession
+     * @param SubscriberFactory $subscriberFactory
+     * @param Data $dataHelper
      * @param array $data
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
-        \Magento\Checkout\Model\Session $checkoutSession,
-        \Magento\Customer\Model\Session $customerSession,
-        \Magento\Newsletter\Model\SubscriberFactory $subscriberFactory,
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
+        Context $context,
+        CheckoutSession $checkoutSession,
+        Session $customerSession,
+        SubscriberFactory $subscriberFactory,
+        Data $dataHelper,
         array $data = []
     ) {
         $this->checkoutSession   = $checkoutSession;
@@ -51,25 +57,38 @@ class Subscribe extends \Magento\Framework\View\Element\Template
         );
     }
 
+    /**
+     * Get banner text
+     *
+     * @return mixed
+     */
     public function getBannerText()
     {
-        return $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_BANNER_TEXT);
-    }
-
-    public function getButtonText()
-    {
-        return $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_BUTTON_TEXT);
+        return $this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_BANNER_TEXT);
     }
 
     /**
-     * {@inheritdoc}
+     * Get button text
+     *
+     * @return mixed
+     */
+    public function getButtonText()
+    {
+        return $this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_BUTTON_TEXT);
+    }
+
+    /**
+     * Produce and return block's html output
+     *
+     * @return string
      */
     public function toHtml()
     {
         if ($this->customerSession->isLoggedIn()
             || $this->isSubscribed()
-            || !$this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_PAGE_SUBSCRIBE)
+            || !$this->dataHelper->getConfigValue(Data::CONFIG_PATH_ECOMMERCE_SUCCSESS_PAGE_SUBSCRIBE)
         ) {
+
             return '';
         }
         return parent::toHtml();
@@ -89,6 +108,11 @@ class Subscribe extends \Magento\Framework\View\Element\Template
         return (bool)$subscriber->getId();
     }
 
+    /**
+     * Get customer's email
+     *
+     * @return float|string|null
+     */
     public function getEmail()
     {
         return $this->checkoutSession->getLastRealOrder()->getCustomerEmail();

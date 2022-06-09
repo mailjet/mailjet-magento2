@@ -2,16 +2,52 @@
 
 namespace Mailjet\Mailjet\Helper\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 
 trait ContactProperty
 {
+    /**
+     * Get response
+     *
+     * @return mixed
+     */
     abstract public function getResponce();
+
+    /**
+     * Get error
+     *
+     * @return mixed
+     */
     abstract public function getError();
+
+    /**
+     * Set response
+     *
+     * @param array $responce
+     * @return mixed
+     */
     abstract protected function setResponce($responce);
+
+    /**
+     * Set error
+     *
+     * @param array $error
+     * @return mixed
+     */
     abstract protected function setError($error);
+
+    /**
+     * Get client
+     *
+     * @return mixed
+     */
     abstract protected function getClient();
 
+    /**
+     * Get properties
+     *
+     * @return array
+     */
     public function getProperties()
     {
         $this->setResponce($this->getClient()->get(\Mailjet\Resources::$Contactmetadata, [], ['version' => 'v3']));
@@ -23,6 +59,12 @@ trait ContactProperty
         }
     }
 
+    /**
+     * Create property
+     *
+     * @param array $data
+     * @return array
+     */
     public function createProperty($data)
     {
         $body = [
@@ -42,6 +84,13 @@ trait ContactProperty
         }
     }
 
+    /**
+     * Update contact data
+     *
+     * @param string $email
+     * @param array $properties
+     * @return array
+     */
     public function updateContactData($email, $properties)
     {
         $data = [];

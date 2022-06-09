@@ -1,16 +1,21 @@
-<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Hint */ ?>
+<?php
+/* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Hint */
+/* @var  $escaper \Magento\Framework\Escaper */
+//phpcs:disable
+?>
 <div class="mailjet-hint">
     <div class="container">
-        <img height="70px" width="100px" src="<?= $block->getViewFileUrl('Mailjet_Mailjet::images/logo/mailjet-orange.svg'); ?>"/>
+        <img height="70px" width="100px" src="<?= $escaper->escapeUrl($block->getViewFileUrl('Mailjet_Mailjet::images/logo/mailjet-orange.svg')); ?>"/>
         <div>
-            <p><?= __('Maijet plugin allows you to easily sync and manage contacts, activate transactional emails, design and send marketing campaigns.') ?></p>
+            <p><?= $block->escapeHtml(__('Maijet plugin allows you to easily sync and manage contacts, activate transactional emails, design and send marketing campaigns.')) ?></p>
             <p>
-                <strong><?= __('Need help getting started?'); ?></strong>
-                <a target="_blank" href="https://www.mailjet.com/guides/wordpress-user-guide/campaigns/"><?= __('Read our user guide'); ?></a>
-                <?= __('or'); ?>
-                <a target="_blank" href="https://www.mailjet.com/feature/support/"><?= __('Contact our support team'); ?></a>
+                <strong><?= $block->escapeHtml(__('Need help getting started?')); ?></strong>
+                <a target="_blank" href="https://www.mailjet.com/guides/wordpress-user-guide/campaigns/"><?= $block->escapeHtml(__('Read our user guide')); ?></a>
+                <?= $block->escapeHtml(__('or')); ?>
+                <a target="_blank" href="https://www.mailjet.com/feature/support/"><?= $block->escapeHtml(__('Contact our support team')); ?></a>
             </p>
-            <p class="version"> <?= __('Mailjet v') ?><?= $block->getModuleVersion() ?></p>
+            <p class="version"> <?= $block->escapeHtml(__('Mailjet v')) ?><?= /* @noEscape */ $block->getModuleVersion() ?></p>
         </div>
     </div>
 </div>
+<?php //phpcs:enable ?>

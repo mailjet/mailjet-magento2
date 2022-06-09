@@ -3,6 +3,7 @@
 namespace Mailjet\Mailjet\Model;
 
 use Mailjet\Mailjet\Api\Data\JobInterface as DataInterface;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 use Mailjet\Mailjet\Model\ResourceModel\Job as Resource;
 use Mailjet\Mailjet\Model\JobFactory as ModelFactory;
 use Mailjet\Mailjet\Model\ResourceModel\Job\CollectionFactory as CollectionFactory;
@@ -17,7 +18,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Limit the amount of subscribers executed at once
      */
-    const SUBSCRIBER_QUEUE_LIMIT = 100;
+    public const SUBSCRIBER_QUEUE_LIMIT = 100;
 
     /**
      * @var Resource
@@ -90,20 +91,20 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     private $emulation;
 
     /**
-     * @param Resource $resource
-     * @param ModelFactory $modelFactory
-     * @param CollectionFactory $collectionFactory
-     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
-     * @param CollectionProcessorInterface $collectionProcessor
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
-     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
+     * @param Resource                                                $resource
+     * @param ModelFactory                                            $modelFactory
+     * @param CollectionFactory                                       $collectionFactory
+     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory    $searchResultsFactory,
+     * @param CollectionProcessorInterface                            $collectionProcessor
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder            $searchCriteriaBuilder
+     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface          $configRepository
      * @param \Mailjet\Mailjet\Api\SubscriberQueueRepositoryInterface $subscriberQueueRepository
-     * @param \Mailjet\Mailjet\Api\Data\ErrorInterfaceFactory $errorFactory
-     * @param \Mailjet\Mailjet\Api\ErrorRepositoryInterface $errorRepository
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
-     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
-     * @param \Mailjet\Mailjet\Model\Api\Email $apiEmail
-     * @param \Magento\Store\Model\App\Emulation $emulation
+     * @param \Mailjet\Mailjet\Api\Data\ErrorInterfaceFactory         $errorFactory
+     * @param \Mailjet\Mailjet\Api\ErrorRepositoryInterface           $errorRepository
+     * @param \Mailjet\Mailjet\Model\Api\Connection                   $apiConnection
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime             $dateTime
+     * @param \Mailjet\Mailjet\Model\Api\Email                        $apiEmail
+     * @param \Magento\Store\Model\App\Emulation                      $emulation
      */
     public function __construct(
         Resource $resource,
@@ -140,7 +141,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Save Job data
      *
-     * @param DataInterface $job
+     * @param  DataInterface $job
      * @return DataInterface
      * @throws CouldNotSaveException
      */
@@ -157,7 +158,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Load Job data by given Job Identity
      *
-     * @param Int $jobId
+     * @param  Int $jobId
      * @return DataInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
@@ -176,8 +177,8 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @param                                        \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @return                                       \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
@@ -196,7 +197,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Delete Job
      *
-     * @param DataInterface $job
+     * @param  DataInterface $job
      * @return bool
      * @throws CouldNotDeleteException
      */
@@ -213,7 +214,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Delete Job by given Job Identity
      *
-     * @param Int $jobId
+     * @param  Int $jobId
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException
@@ -226,7 +227,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Generate Jobs
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface[] | Array | null $configs
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface[]|array|null $configs
      * @return Void
      */
     public function generateJobs($configs = null)
@@ -272,7 +273,7 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
     /**
      * Execute Jobs
      *
-     * @param \Mailjet\Mailjet\Api\Data\JobInterface[] $job
+     * @param  \Mailjet\Mailjet\Api\Data\JobInterface[] $job
      * @return Void
      */
     public function executeJob($job)
@@ -296,13 +297,13 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
             $connection = $this->apiConnection->getConnection($config);
             $errors = [];
 
-            if ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['SUB']) {
-                $connection->manageContacts($config->getList(), $customers, \Mailjet\Mailjet\Helper\MailjetAPI::CONTACT_ACTIONS['subscribe']);
-            } elseif ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['UNS']) {
-                $connection->manageContacts($config->getList(), $customers, \Mailjet\Mailjet\Helper\MailjetAPI::CONTACT_ACTIONS['unsubscribe']);
-            } elseif ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['DEL']) {
-                $connection->manageContacts($config->getList(), $customers, \Mailjet\Mailjet\Helper\MailjetAPI::CONTACT_ACTIONS['delete']);
-            } elseif ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['UPD']) {
+            if ($job->getAction() == SubscriberQueue::ACTIONS['SUB']) {
+                $connection->manageContacts($config->getList(), $customers, MailjetAPI::CONTACT_ACTIONS['subscribe']);
+            } elseif ($job->getAction() == SubscriberQueue::ACTIONS['UNS']) {
+                $connection->manageContacts($config->getList(), $customers, MailjetAPI::CONTACT_ACTIONS['unsubscribe']);
+            } elseif ($job->getAction() == SubscriberQueue::ACTIONS['DEL']) {
+                $connection->manageContacts($config->getList(), $customers, MailjetAPI::CONTACT_ACTIONS['delete']);
+            } elseif ($job->getAction() == SubscriberQueue::ACTIONS['UPD']) {
                 foreach ($customers as $customer) {
                     $connection->updateContactData($customer['email'], json_decode($customer['property'], true));
 
@@ -313,9 +314,9 @@ class JobRepository implements \Mailjet\Mailjet\Api\JobRepositoryInterface
                         $errors[] = $this->errorRepository->save($error)->getId();
                     }
                 }
-            } elseif ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['STK']) {
+            } elseif ($job->getAction() == SubscriberQueue::ACTIONS['STK']) {
                 $this->apiEmail->notifyStock($customers, $connection, $config->getStoreId());
-            } elseif ($job->getAction() == \Mailjet\Mailjet\Api\Data\SubscriberQueueInterface::ACTIONS['SAL']) {
+            } elseif ($job->getAction() == SubscriberQueue::ACTIONS['SAL']) {
                 $this->apiEmail->notifySale($customers, $connection, $config->getStoreId());
             }
 

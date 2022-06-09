@@ -15,22 +15,31 @@ class Template implements \Magento\Framework\Option\ArrayInterface
      * @var \Magento\Framework\App\RequestInterface
      */
     private $request;
-
+    /**
+     * @var array
+     */
     private $options = [];
 
     /**
      * MailjetList constructor.
+     *
      * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
      * @param \Magento\Framework\App\RequestInterface $request
      */
     public function __construct(
-        \Mailjet\Mailjet\Model\Api\Connection $apiConnection,
+        \Mailjet\Mailjet\Model\Api\Connection   $apiConnection,
         \Magento\Framework\App\RequestInterface $request
     ) {
-        $this->apiConnection     = $apiConnection;
-        $this->request           = $request;
+        $this->apiConnection = $apiConnection;
+        $this->request = $request;
     }
 
+    /**
+     * To option array
+     *
+     * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
+     */
     public function toOptionArray()
     {
         if (!$this->options) {
@@ -42,7 +51,8 @@ class Template implements \Magento\Framework\Option\ArrayInterface
 
                 if ($result) {
                     foreach ($result as $template) {
-                        $this->options[] = ['value' => $template[MailjetAPI::ID], 'label' => $template[MailjetAPI::NAME]];
+                        $this->options[] = ['value' => $template[MailjetAPI::ID],
+                            'label' => $template[MailjetAPI::NAME]];
                     }
                 } else {
                     break;

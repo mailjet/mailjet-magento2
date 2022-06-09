@@ -2,15 +2,20 @@
 
 namespace Mailjet\Mailjet\Plugin\Order\Email\Sender;
 
+use Exception;
+use Magento\Sales\Model\Order;
+use Mailjet\Mailjet\Helper\Data;
+use Mailjet\Mailjet\Model\Api\Email;
+
 class OrderSender
 {
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var Data
      */
     protected $dataHelper;
 
     /**
-     * @var \Mailjet\Mailjet\Model\Api\Email
+     * @var Email
      */
     protected $apiEmail;
 
@@ -20,34 +25,45 @@ class OrderSender
     protected $orderResource;
 
     /**
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Mailjet\Mailjet\Model\Api\Email $apiEmail
+     * @param Data $dataHelper
+     * @param Email $apiEmail
      * @param \Magento\Sales\Model\ResourceModel\Order $orderResource
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
-        \Mailjet\Mailjet\Model\Api\Email $apiEmail,
+        Data                                     $dataHelper,
+        Email                                    $apiEmail,
         \Magento\Sales\Model\ResourceModel\Order $orderResource
     ) {
-        $this->dataHelper    = $dataHelper;
-        $this->apiEmail      = $apiEmail;
+        $this->dataHelper = $dataHelper;
+        $this->apiEmail = $apiEmail;
         $this->orderResource = $orderResource;
     }
 
     /**
      * Around Send Message.
      *
-     * @param \Magento\Sales\Model\Order\Email\Sender\OrderSender $subject
+     * @param Order\Email\Sender\OrderSender $subject
      * @param callable $proceed
-     * @param \Magento\Sales\Model\Order\Order $order
+     * @param Order $order
      * @param bool $forceSyncMode
      * @return bool
+     * @throws Exception
      */
-    public function aroundSend(\Magento\Sales\Model\Order\Email\Sender\OrderSender $subject, callable $proceed, \Magento\Sales\Model\Order $order, $forceSyncMode = false)
-    {
+    public function aroundSend(
+        Order\Email\Sender\OrderSender $subject,
+        callable                       $proceed,
+        Order                          $order,
+        $forceSyncMode = false
+    ) {
         $storeId = $order->getStore()->getStoreId();
-        if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CONFIRMATION_STATUS, $storeId)
-            && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CONFIRMATION_TEMPLATE_ID, $storeId)
+        if ($this->dataHelper->getConfigValue(
+            Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CONFIRMATION_STATUS,
+            $storeId
+        )
+            && $this->dataHelper->getConfigValue(
+                Data::CONFIG_PATH_ORDER_NOTIFICATION_ORDER_CONFIRMATION_TEMPLATE_ID,
+                $storeId
+            )
         ) {
             $result = $this->apiEmail->newOrder($order, $storeId);
 

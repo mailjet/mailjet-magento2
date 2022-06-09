@@ -39,11 +39,13 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
     private $collectionProcessor;
 
     /**
-     * @param Resource $resource
-     * @param ModelFactory $modelFactory
-     * @param CollectionFactory $collectionFactory
-     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory,
-     * @param CollectionProcessorInterface $collectionProcessor
+     * ErrorRepository construct
+     *
+     * @param \Mailjet\Mailjet\Model\ResourceModel\Error $resource
+     * @param \Mailjet\Mailjet\Model\ErrorFactory $modelFactory
+     * @param \Mailjet\Mailjet\Model\ResourceModel\Error\CollectionFactory $collectionFactory
+     * @param \Magento\Framework\Api\SearchResultsInterfaceFactory $searchResultsFactory
+     * @param \Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface $collectionProcessor
      */
     public function __construct(
         Resource $resource,
@@ -62,7 +64,7 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
     /**
      * Save error data
      *
-     * @param DataInterface $error
+     * @param  DataInterface $error
      * @return DataInterface
      * @throws CouldNotSaveException
      */
@@ -79,7 +81,7 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
     /**
      * Load Error data by given Error Identity
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return DataInterface
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
@@ -98,8 +100,8 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
      *
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $criteria
-     * @return \Magento\Framework\Api\SearchResultsInterface
+     * @param                                        \Magento\Framework\Api\SearchCriteriaInterface $criteria
+     * @return                                       \Magento\Framework\Api\SearchResultsInterface
      */
     public function getList(\Magento\Framework\Api\SearchCriteriaInterface $criteria)
     {
@@ -118,7 +120,7 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
     /**
      * Delete error
      *
-     * @param DataInterface $error
+     * @param  DataInterface $error
      * @return bool
      * @throws CouldNotDeleteException
      */
@@ -135,7 +137,7 @@ class ErrorRepository implements \Mailjet\Mailjet\Api\ErrorRepositoryInterface
     /**
      * Delete error by given error Identity
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return bool
      * @throws CouldNotDeleteException
      * @throws NoSuchEntityException

@@ -2,10 +2,12 @@
 
 namespace Mailjet\Mailjet\Cron;
 
+use Mailjet\Mailjet\Helper\Data;
+
 class AbandonedCart
 {
     /**
-     * @var \Mailjet\Mailjet\Helper\Data
+     * @var Data
      */
     private $dataHelper;
 
@@ -42,16 +44,16 @@ class AbandonedCart
     /**
      * AbandonedCart constructor.
      *
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
-     * @param \Mailjet\Mailjet\Model\Api\Email $apiEmail
-     * @param \Magento\Quote\Api\CartRepositoryInterface $cartRepository
-     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param Data                                                 $dataHelper
+     * @param \Mailjet\Mailjet\Model\Api\Email                     $apiEmail
+     * @param \Magento\Quote\Api\CartRepositoryInterface           $cartRepository
+     * @param \Mailjet\Mailjet\Api\ConfigRepositoryInterface       $configRepository
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder         $searchCriteriaBuilder
      * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $timezone
-     * @param \Magento\Store\Model\App\Emulation $emulation
+     * @param \Magento\Store\Model\App\Emulation                   $emulation
      */
     public function __construct(
-        \Mailjet\Mailjet\Helper\Data $dataHelper,
+        Data $dataHelper,
         \Mailjet\Mailjet\Model\Api\Email $apiEmail,
         \Magento\Quote\Api\CartRepositoryInterface $cartRepository,
         \Mailjet\Mailjet\Api\ConfigRepositoryInterface $configRepository,
@@ -68,20 +70,40 @@ class AbandonedCart
         $this->emulation             = $emulation;
     }
 
+    /**
+     * Execute action
+     *
+     * @return void
+     */
     public function execute()
     {
         foreach ($this->configRepository->getAll() as $config) {
             $storeId = $config->getStoreId();
 
-            if ($this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_STATUS, $storeId)
-                && $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TEMPLATE_ID, $storeId)
+            if ($this->dataHelper->getConfigValue(
+                Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_STATUS,
+                $storeId
+            )
+                && $this->dataHelper->getConfigValue(
+                    Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TEMPLATE_ID,
+                    $storeId
+                )
             ) {
                 $this->emulation->startEnvironmentEmulation($storeId);
 
-                $sendingTime = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TIME, $storeId);
-                $sendingTimeType = $this->dataHelper->getConfigValue(\Mailjet\Mailjet\Helper\Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TIME_TYPE, $storeId);
-                $fromTime = $this->timezone->date(null, null, false)->modify('-' . $sendingTime . ' ' . $sendingTimeType)->modify('-5 minute')->format('Y-m-d H:i:s');
-                $toTime = $this->timezone->date(null, null, false)->modify('-' . $sendingTime . ' ' . $sendingTimeType)->format('Y-m-d H:i:s');
+                $sendingTime = $this->dataHelper->getConfigValue(
+                    Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TIME,
+                    $storeId
+                );
+                $sendingTimeType = $this->dataHelper->getConfigValue(
+                    Data::CONFIG_PATH_ABANDONED_CART_ABANDONED_CART_TIME_TYPE,
+                    $storeId
+                );
+                $fromTime = $this->timezone->date(null, null, false)
+                    ->modify('-' . $sendingTime . ' ' . $sendingTimeType)->modify('-5 minute')
+                    ->format('Y-m-d H:i:s');
+                $toTime = $this->timezone->date(null, null, false)
+                    ->modify('-' . $sendingTime . ' ' . $sendingTimeType)->format('Y-m-d H:i:s');
 
                 $filter = $this->searchCriteriaBuilder
                     ->addFilter('customer_id', true, 'notnull')

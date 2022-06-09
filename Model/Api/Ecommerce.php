@@ -2,6 +2,8 @@
 
 namespace Mailjet\Mailjet\Model\Api;
 
+use Mailjet\Mailjet\Helper\Data;
+
 class Ecommerce
 {
     /**
@@ -17,7 +19,7 @@ class Ecommerce
     /**
      * Ecommerce construncor
      *
-     * @param \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository
+     * @param \Magento\Customer\Api\CustomerRepositoryInterface          $customerRepository
      * @param \Magento\Sales\Model\ResourceModel\Order\CollectionFactory $orderCollectionFactory
      */
     public function __construct(
@@ -31,8 +33,8 @@ class Ecommerce
     /**
      * Get Ecommerce Data
      *
-     * @param \Magento\Customer\Model\Customer
-     * @return Array
+     * @param  \Magento\Customer\Model\Customer $customer
+     * @return array
      */
     public function getEcommerceData($customer)
     {
@@ -57,10 +59,10 @@ class Ecommerce
         }
 
         return [
-            \Mailjet\Mailjet\Helper\Data::REST_API_CONTACT_PROPERTIES['total_orders_count']['name'] => $orderCount,
-            \Mailjet\Mailjet\Helper\Data::REST_API_CONTACT_PROPERTIES['total_spent']['name'] => $total,
-            \Mailjet\Mailjet\Helper\Data::REST_API_CONTACT_PROPERTIES['last_order_date']['name'] => $lastOrderDate,
-            \Mailjet\Mailjet\Helper\Data::REST_API_CONTACT_PROPERTIES['account_creation_date']['name'] => $customerCreatedDate,
+            Data::REST_API_CONTACT_PROPERTIES['total_orders_count']['name'] => $orderCount,
+            Data::REST_API_CONTACT_PROPERTIES['total_spent']['name'] => $total,
+            Data::REST_API_CONTACT_PROPERTIES['last_order_date']['name'] => $lastOrderDate,
+            Data::REST_API_CONTACT_PROPERTIES['account_creation_date']['name'] => $customerCreatedDate,
         ];
     }
 }

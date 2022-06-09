@@ -7,20 +7,20 @@ interface ConfigInterface
     /**
      * Constants for keys of data array. Identical to the name of the getter in snake case
      */
-    const ID                  = 'config_id';
-    const CONFIG_ID           = 'config_id';
-    const API_KEY             = 'api_key';
-    const SECRET_KEY          = 'secret_key';
-    const LIST                = 'list';
-    const SYNC_PREFERENCE     = 'sync_preference';
-    const STORE_ID            = 'store_id';
-    const UNSUBSCRIBE_EVENT   = 'unsubscribe_event';
-    const ECOMMERCE_DATA      = 'ecommerce_data';
-    const ENABLED             = 'enabled';
-    const IFRAME_TOKEN        = 'iframe_token';
-    const IFRAME_TOKEN_EXPIRE = 'iframe_token_expire';
-    const DELETED             = 'deleted';
-    const HAS_ERRORS          = 'has_errors';
+    public const ID                  = 'config_id';
+    public const CONFIG_ID           = 'config_id';
+    public const API_KEY             = 'api_key';
+    public const SECRET_KEY          = 'secret_key';
+    public const LIST                = 'list';
+    public const SYNC_PREFERENCE     = 'sync_preference';
+    public const STORE_ID            = 'store_id';
+    public const UNSUBSCRIBE_EVENT   = 'unsubscribe_event';
+    public const ECOMMERCE_DATA      = 'ecommerce_data';
+    public const ENABLED             = 'enabled';
+    public const IFRAME_TOKEN        = 'iframe_token';
+    public const IFRAME_TOKEN_EXPIRE = 'iframe_token_expire';
+    public const DELETED             = 'deleted';
+    public const HAS_ERRORS          = 'has_errors';
 
     /**
      * Get ID
@@ -123,7 +123,7 @@ interface ConfigInterface
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setId($id);
@@ -131,7 +131,7 @@ interface ConfigInterface
     /**
      * Set ID
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setConfigId($configId);
@@ -139,7 +139,7 @@ interface ConfigInterface
     /**
      * Set api key
      *
-     * @param String $apiKey
+     * @param  String $apiKey
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setApiKey($apiKey);
@@ -147,7 +147,7 @@ interface ConfigInterface
     /**
      * Set secret key
      *
-     * @param String $secretKey
+     * @param  String $secretKey
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setSecretKey($secretKey);
@@ -155,7 +155,7 @@ interface ConfigInterface
     /**
      * Set list
      *
-     * @param String $list
+     * @param  String $list
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setList($list);
@@ -163,7 +163,7 @@ interface ConfigInterface
     /**
      * Set sync preference
      *
-     * @param Int $syncPreference
+     * @param  Int $syncPreference
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setSyncPreference($syncPreference);
@@ -171,7 +171,7 @@ interface ConfigInterface
     /**
      * Set store id
      *
-     * @param Int $storeId
+     * @param  Int $storeId
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setStoreId($storeId);
@@ -179,42 +179,47 @@ interface ConfigInterface
     /**
      * Set unsubscribe event
      *
-     * @return Int
+     * @param int $event
+     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setUnsubscribeEvent($event);
 
     /**
      * Set ecommerce data
      *
-     * @return Int
+     * @param int $ecommerceData
+     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setEcommerceData($ecommerceData);
 
     /**
      * Set enabled
      *
-     * @return Int
+     * @param int $enabled
+     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setEnabled($enabled);
 
     /**
      * Get iframe token
      *
-     * @return String
+     * @param string $iframeToken
+     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setIframeToken($iframeToken);
 
     /**
      * Get iframe token expire
      *
-     * @return String
+     * @param string $iframeTokenExpire
+     * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setIframeTokenExpire($iframeTokenExpire);
 
     /**
      * Set deleted
      *
-     * @param Int $deleted
+     * @param  int $deleted
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setDeleted($deleted);
@@ -222,7 +227,7 @@ interface ConfigInterface
     /**
      * Set has errors
      *
-     * @param Int $hasErrors
+     * @param  int $hasErrors
      * @return \Mailjet\Mailjet\Api\Data\ConfigInterface
      */
     public function setHasErrors($hasErrors);

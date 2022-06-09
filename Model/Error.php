@@ -4,6 +4,11 @@ namespace Mailjet\Mailjet\Model;
 
 class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\Mailjet\Api\Data\ErrorInterface
 {
+    /**
+     * Error construct
+     *
+     * @return void
+     */
     protected function _construct()
     {
         $this->_init(\Mailjet\Mailjet\Model\ResourceModel\Error::class);
@@ -62,7 +67,7 @@ class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\M
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setId($id)
@@ -73,7 +78,7 @@ class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\M
     /**
      * Set error id
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setErrorId($errorId)
@@ -84,7 +89,7 @@ class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\M
     /**
      * Set message
      *
-     * @param Int $message
+     * @param  Int $message
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setMessage($message)
@@ -95,7 +100,7 @@ class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\M
     /**
      * Set api result
      *
-     * @param Int $apiResult
+     * @param  Int $apiResult
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setApiResult($apiResult)
@@ -106,7 +111,7 @@ class Error extends \Magento\Framework\Model\AbstractModel implements \Mailjet\M
     /**
      * Set status
      *
-     * @param Int $status
+     * @param  Int $status
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setStatus($status)

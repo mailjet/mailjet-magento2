@@ -7,13 +7,13 @@ interface JobInterface
     /**
      * Constants for keys of data array. Identical to the name of the getter in snake case
      */
-    const ID                 = 'job_id';
-    const JOB_ID             = 'job_id';
-    const ACTION             = 'action';
-    const CONFIG_ID          = 'config_id';
-    const CREATED_AT         = 'created_at';
-    const EXECUTED_AT        = 'executed_at';
-    const ERROR_ID           = 'error_id';
+    public const ID                 = 'job_id';
+    public const JOB_ID             = 'job_id';
+    public const ACTION             = 'action';
+    public const CONFIG_ID          = 'config_id';
+    public const CREATED_AT         = 'created_at';
+    public const EXECUTED_AT        = 'executed_at';
+    public const ERROR_ID           = 'error_id';
 
     /**
      * Get ID
@@ -67,7 +67,7 @@ interface JobInterface
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setId($id);
@@ -75,7 +75,7 @@ interface JobInterface
     /**
      * Set ID
      *
-     * @param Int $jobId
+     * @param  Int $jobId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setJobId($jobId);
@@ -83,7 +83,7 @@ interface JobInterface
     /**
      * Set action
      *
-     * @param String $action
+     * @param  String $action
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setAction($action);
@@ -91,7 +91,7 @@ interface JobInterface
     /**
      * Set config id
      *
-     * @param Int $configId
+     * @param  Int $configId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setConfigId($configId);
@@ -99,7 +99,7 @@ interface JobInterface
     /**
      * Set config id
      *
-     * @param String $createdAt
+     * @param  String $createdAt
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setCreatedAt($createdAt);
@@ -107,7 +107,7 @@ interface JobInterface
     /**
      * Set executed at
      *
-     * @param String $executedAt
+     * @param  String $executedAt
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setExecutedAt($executedAt);
@@ -115,7 +115,7 @@ interface JobInterface
     /**
      * Set error id
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      */
     public function setErrorId($errorId);

@@ -1,17 +1,24 @@
-<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\Resync */ ?>
+<?php
+/* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\Resync */
+/* @var  $escaper \Magento\Framework\Escaper */
+
+//phpcs:disable
+use Mailjet\Mailjet\Helper\Data;
+
+?>
 <?= $block->getButtonHtml() ?>
 <script type="text/javascript">//<![CDATA[
     require([
         'prototype',
         'jquery'
     ], function () {
-        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON; ?>', 'click', function () {
-            var mailjet_resync_button_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON; ?>';
-            var mailjet_api_key_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_API_KEY; ?>';
-            var mailjet_secret_key_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SECRET_KEY; ?>';
-            var mailjet_list_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_MAILJET_LIST; ?>';
-            var mailjet_sync_preference_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE; ?>';
-            var mailjet_ecommerce_data_id = '<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ECOMMERCE_DATA; ?>';
+        Event.observe('<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON); ?>', 'click', function () {
+            var mailjet_resync_button_id = '<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON); ?>';
+            var mailjet_api_key_id = '<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_API_KEY); ?>';
+            var mailjet_secret_key_id = '<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SECRET_KEY); ?>';
+            var mailjet_list_id = '<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_MAILJET_LIST); ?>';
+            var mailjet_sync_preference_id = '<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE); ?>';
+            var mailjet_ecommerce_data_id = '<?= $block->escapeHtml(Data::FIELD_ID_ECOMMERCE_DATA); ?>';
             var mailjet_resync_button = jQuery('#' + mailjet_resync_button_id);
             var mailjet_api_key = jQuery('#' + mailjet_api_key_id);
             var mailjet_secret_key = jQuery('#' + mailjet_secret_key_id);
@@ -22,9 +29,9 @@
             mailjet_list.trigger('processStart');
 
             jQuery.ajax({
-                url: '<?= $block->getUrl('mailjet/system_config/resync'); ?>',
+                url: '<?= $escaper->escapeUrl($block->getUrl('mailjet/system_config/resync')); ?>',
                 data: {
-                    website_id: '<?= $block->getRequest()->getParam('website'); ?>',
+                    website_id: '<?= /* @noEscape */$block->getRequest()->getParam('website'); ?>',
                     api_key: mailjet_api_key.val(),
                     secret_key: mailjet_secret_key.val(),
                     list: mailjet_list.val(),
@@ -44,14 +51,15 @@
             });
         });
 
-        Event.observe('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE; ?>', 'change', function (element) {
-            if (jQuery(element.srcElement).val() == "<?= \Mailjet\Mailjet\Helper\Data::SYNC_PREFERENCE_ONLY_FUTURE; ?>") {
-                jQuery('#<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON; ?>').attr('disabled', 'disabled');
+        Event.observe('<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE); ?>', 'change', function (element) {
+            if (jQuery(element.srcElement).val() == "<?= $block->escapeHtml(Data::SYNC_PREFERENCE_ONLY_FUTURE); ?>") {
+                jQuery('#<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON); ?>').attr('disabled', 'disabled');
             } else {
-                jQuery('#<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON; ?>').removeAttr('disabled');
+                jQuery('#<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_RESYNC_BUTTON); ?>').removeAttr('disabled');
             }
         });
 
-        document.getElementById('<?= \Mailjet\Mailjet\Helper\Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE; ?>').dispatchEvent(new Event('change'));
+        document.getElementById('<?= $block->escapeHtml(Data::FIELD_ID_ACCOUNT_SYNC_PREFERENCE); ?>').dispatchEvent(new Event('change'));
     });
 //]]></script>
+<?php //phpcs:enable ?>

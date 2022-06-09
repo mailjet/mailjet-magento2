@@ -7,11 +7,11 @@ interface ErrorInterface
     /**
      * Constants for keys of data array. Identical to the name of the getter in snake case
      */
-    const ID           = 'error_id';
-    const ERROR_ID     = 'error_id';
-    const MESSAGE      = 'message';
-    const API_RESULT   = 'api_result';
-    const STATUS       = 'status';
+    public const ID           = 'error_id';
+    public const ERROR_ID     = 'error_id';
+    public const MESSAGE      = 'message';
+    public const API_RESULT   = 'api_result';
+    public const STATUS       = 'status';
 
     /**
      * Get ID
@@ -51,7 +51,7 @@ interface ErrorInterface
     /**
      * Set ID
      *
-     * @param Int $id
+     * @param  Int $id
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setId($id);
@@ -59,7 +59,7 @@ interface ErrorInterface
     /**
      * Set error id
      *
-     * @param Int $errorId
+     * @param  Int $errorId
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setErrorId($errorId);
@@ -67,7 +67,7 @@ interface ErrorInterface
     /**
      * Set message
      *
-     * @param Int $message
+     * @param  Int $message
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setMessage($message);
@@ -75,7 +75,7 @@ interface ErrorInterface
     /**
      * Set api result
      *
-     * @param Int $apiResult
+     * @param  Int $apiResult
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setApiResult($apiResult);
@@ -83,7 +83,7 @@ interface ErrorInterface
     /**
      * Set status
      *
-     * @param Int $status
+     * @param  Int $status
      * @return \Mailjet\Mailjet\Api\Data\ErrorInterface
      */
     public function setStatus($status);

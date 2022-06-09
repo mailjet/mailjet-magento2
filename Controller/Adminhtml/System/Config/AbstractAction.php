@@ -20,10 +20,10 @@ abstract class AbstractAction extends \Magento\Backend\App\Action
     protected $dataHelper;
 
     /**
-     * @param \Magento\Backend\App\Action\Context $context
+     * @param \Magento\Backend\App\Action\Context              $context
      * @param \Magento\Framework\Controller\Result\JsonFactory $resultJsonFactory
-     * @param \Mailjet\Mailjet\Model\Api\Connection $apiConnection
-     * @param \Mailjet\Mailjet\Helper\Data $dataHelper
+     * @param \Mailjet\Mailjet\Model\Api\Connection            $apiConnection
+     * @param \Mailjet\Mailjet\Helper\Data                     $dataHelper
      */
     public function __construct(
         \Magento\Backend\App\Action\Context $context,

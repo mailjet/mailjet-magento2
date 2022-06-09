@@ -2,17 +2,61 @@
 
 namespace Mailjet\Mailjet\Helper\Api;
 
-use \Mailjet\Mailjet\Helper\MailjetAPI;
+use Mailjet\Mailjet\Helper\MailjetAPI;
 
 trait ApiToken
 {
+    /**
+     * Get api key
+     *
+     * @return mixed
+     */
     abstract public function getApiKey();
+
+    /**
+     * Get response
+     *
+     * @return mixed
+     */
     abstract public function getResponce();
+
+    /**
+     * Get error
+     *
+     * @return mixed
+     */
     abstract public function getError();
+
+    /**
+     * Set responce
+     *
+     * @param array $responce
+     * @return mixed
+     */
     abstract protected function setResponce($responce);
+
+    /**
+     * SetError
+     *
+     * @param array $error
+     * @return mixed
+     */
     abstract protected function setError($error);
+
+    /**
+     * GetClient
+     *
+     * @return mixed
+     */
     abstract protected function getClient();
 
+    /**
+     * Get api token
+     *
+     * @param array $pages
+     * @param string $sessionExpiration
+     * @return array
+     */
     public function getApiToken($pages, $sessionExpiration)
     {
         $body = [

@@ -1,4 +1,8 @@
-<?php /* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\TestSMTP */ ?>
+<?php
+/* @var $block \Mailjet\Mailjet\Block\Adminhtml\System\Config\Fieldset\Button\TestSMTP */
+/* @var  $escaper \Magento\Framework\Escaper */
+//phpcs:disable
+?>
 <?= $block->getButtonHtml() ?>
 <script type="text/javascript">//<![CDATA[
     require([
@@ -29,15 +33,15 @@
             mailjet_test_smtp_send_button.trigger('processStart');
 
             jQuery.ajax({
-                url: '<?= $block->getUrl('mailjet/system_config/sendemail'); ?>',
+                url: '<?= $escaper->escapeUrl($block->getUrl('mailjet/system_config/sendemail')); ?>',
                 data: {
                     smtp_port: mailjet_smtp_port.val(),
                     use_ssl_tls: mailjet_use_ssl_tls.val(),
                     smtp_email: mailjet_test_smtp_email.val(),
                     api_key: mailjet_api_key.val(),
                     secret_key: mailjet_secret_key.val(),
-                    website_id: '<?= $block->getRequest()->getParam('website'); ?>',
-                    store_id: '<?= $block->getRequest()->getParam('store'); ?>'
+                    website_id: '<?= $escaper->escapeHtmlAttr($block->getRequest()->getParam('website')); ?>',
+                    store_id: '<?= $escaper->escapeHtmlAttr($block->getRequest()->getParam('store')); ?>'
                 },
                 type: 'POST',
                 success: function(data) {
@@ -65,3 +69,4 @@
         });
     });
 //]]></script>
+<?php //phpcs:enable ?>

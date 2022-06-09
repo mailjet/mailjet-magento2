@@ -7,7 +7,7 @@ interface JobRepositoryInterface
     /**
      * Save job.
      *
-     * @param \Mailjet\Mailjet\Api\Data\JobInterface $job
+     * @param  \Mailjet\Mailjet\Api\Data\JobInterface $job
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -16,7 +16,7 @@ interface JobRepositoryInterface
     /**
      * Retrieve job.
      *
-     * @param int $jobId
+     * @param  int $jobId
      * @return \Mailjet\Mailjet\Api\Data\JobInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -25,7 +25,7 @@ interface JobRepositoryInterface
     /**
      * Retrieve jobs matching the specified criteria.
      *
-     * @param \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
+     * @param  \Magento\Framework\Api\SearchCriteriaInterface $searchCriteria
      * @return \Magento\Framework\Api\SearchResultsInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -34,7 +34,7 @@ interface JobRepositoryInterface
     /**
      * Delete job.
      *
-     * @param \Mailjet\Mailjet\Api\Data\JobInterface $job
+     * @param  \Mailjet\Mailjet\Api\Data\JobInterface $job
      * @return bool true on success
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -43,7 +43,7 @@ interface JobRepositoryInterface
     /**
      * Delete job by ID.
      *
-     * @param int $jobId
+     * @param  int $jobId
      * @return bool true on success
      * @throws \Magento\Framework\Exception\NoSuchEntityException
      * @throws \Magento\Framework\Exception\LocalizedException
@@ -53,7 +53,7 @@ interface JobRepositoryInterface
     /**
      * Generate Jobs
      *
-     * @param \Mailjet\Mailjet\Api\Data\ConfigInterface[] | Array | null $configs
+     * @param  \Mailjet\Mailjet\Api\Data\ConfigInterface[]|array|null $configs
      * @return Void
      */
     public function generateJobs($configs = null);
@@ -61,7 +61,7 @@ interface JobRepositoryInterface
     /**
      * Execute Jobs
      *
-     * @param \Mailjet\Mailjet\Api\Data\JobInterface[] $job
+     * @param  \Mailjet\Mailjet\Api\Data\JobInterface[] $job
      * @return Void
      */
     public function executeJob($job);
